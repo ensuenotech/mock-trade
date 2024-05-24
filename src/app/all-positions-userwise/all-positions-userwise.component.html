@@ -1,0 +1,314 @@
+<div class="w-full">
+  <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+</div>
+<div class="w-11/12 bg-gray-50 mx-auto mt-4">
+  <div class="flex col-span-1 text-right">
+    <button
+      class="bg-green-400 h-6 w-6 text-white px-1 py-1 rounded-md ml-auto"
+      (click)="getOrderList()"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-4 h-4"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+        />
+      </svg>
+    </button>
+  </div>
+  <div class="grid grid-cols-3 gap-5 mb-4">
+    <!-- <div class="p-3 bg-white rounded-md">SD: {{getTotals().sd}}</div>
+      <div class="p-3 bg-white rounded-md">CE: {{getTotals().ce}}</div>
+      <div class="p-3 bg-white rounded-md">PE: {{getTotals().pe}}</div> -->
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <div class="grid grid-cols-1 md:gap-4">
+        <div
+          class="border border-gray-100 rounded-md mt-2 md:mt-0 bg-white w-full"
+        >
+          <div class="px-3 py-2">
+            <div
+              class="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 rounded-sm"
+            >
+              <table class="min-w-full divide-y divide-gray-300">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      (click)="handleSort('userId', $event)"
+                      scope="col"
+                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 border-r"
+                      data-sort="desc"
+                    >
+                      User Id <i class="fa fa-caret-up"></i>
+                    </th>
+                    <th
+                      (click)="handleSort('profit', $event)"
+                      scope="col"
+                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 border-r"
+                      data-sort="desc"
+                    >
+                      Profit <i class="fa fa-caret-up"></i>
+                    </th>
+                    <th
+                      (click)="handleSort('sl', $event)"
+                      scope="col"
+                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 border-r"
+                      data-sort="desc"
+                    >
+                      S L <i class="fa fa-caret-up"></i>
+                    </th>
+                    <th
+                      (click)="handleSort('trialBy', $event)"
+                      scope="col"
+                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 border-r"
+                      data-sort="desc"
+                    >
+                      Trial By <i class="fa fa-caret-up"></i>
+                    </th>
+                    <th
+                      (click)="handleSort('trialAfter', $event)"
+                      scope="col"
+                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 border-r"
+                      data-sort="desc"
+                    >
+                      Trial After <i class="fa fa-caret-up"></i>
+                    </th>
+                    <th
+                      (click)="handleSort('walletBalance', $event)"
+                      scope="col"
+                      class="border-r px-3 py-3.5 text-right text-sm font-semibold text-gray-900"
+                      data-sort="desc"
+                    >
+                      Fund<i class="fa fa-caret-up"></i>
+                    </th>
+
+                    <th
+                      (click)="handleSort('pandl', $event)"
+                      scope="col"
+                      class="border-r px-3 py-3.5 text-sm font-semibold text-gray-900 text-right"
+                      data-sort="desc"
+                    >
+                      PandL<i class="fa fa-caret-up"></i>
+                    </th>
+                    <th
+                      (click)="handleSort('pandlPercentage', $event)"
+                      scope="col"
+                      class="border-r px-3 py-3.5 text-right text-sm font-semibold text-gray-900"
+                      data-sort="desc"
+                    >
+                      PandL %<i class="fa fa-caret-up"></i>
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      data-sort="desc"
+                    ></th>
+                  </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-200 bg-white">
+                  <ng-container
+                    *ngFor="let data of allPositions; let i = index"
+                  >
+                    <tr>
+                      <td
+                        class="whitespace-nowrap px-3 py-1 text-sm text-gray-500 border-r"
+                      >
+                        {{ data.userId }}
+                      </td>
+                      <td
+                        class="whitespace-nowrap px-3 py-1 text-sm text-gray-500 border-r"
+                      >
+                        {{ data.profit }}
+                      </td>
+                      <td
+                        class="whitespace-nowrap px-3 py-1 text-sm text-gray-500 border-r"
+                      >
+                        {{ data.sl }}
+                      </td>
+                      <td
+                        class="whitespace-nowrap px-3 py-1 text-sm text-gray-500 border-r"
+                      >
+                        {{ data.trialBy }}
+                      </td>
+                      <td
+                        class="whitespace-nowrap px-3 py-1 text-sm text-gray-500 border-r"
+                      >
+                        {{ data.trialAfter }}
+                      </td>
+                      <td
+                        class="whitespace-nowrap px-3 py-1 text-sm text-gray-500 text-right border-r"
+                      >
+                        {{ data.walletBalance | number : "1.2-2" }}
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-3 py-1 text-sm text-gray-500 text-right border-r"
+                      >
+                        <!-- {{
+                    getpnlsum(data.positionList, data)
+                        | number : "1.2-2"
+                        }}  -->
+
+                        {{ data.pandl | number : "0.0-0" }}
+                      </td>
+                      <td
+                        class="whitespace-nowrap px-3 py-1 text-sm text-right"
+                        [ngClass]="
+                         getColor(data)
+                        "
+                      >
+                        {{ data.pandlPercentage | number : "1.2-2" }}
+                      </td>
+                      <td
+                        class="whitespace-nowrap px-3 py-1 text-sm text-gray-500 border-l"
+                      >
+                        <div class="flex flex-auto">
+                          <span
+                            class="text-blue-800 py-2 block px-4 hover:text-blue-600 hover:no-underline underline cursor-pointer"
+                            (click)="data.showPositions = !data.showPositions"
+                            >{{
+                              data.showPositions ? "Hide" : "Show"
+                            }}
+                            Positions</span
+                          >
+
+                          <button
+                            *ngIf="data.showExit"
+                            title="Exit"
+                            class="mx-1 ring-1 ring-gray-200 hover:ring-gray-300 rounded-md bg-white hover:bg-gray-200 text-sm px-2 py-2"
+                            (click)="exitAll(data)"
+                          >
+                            Exit
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr *ngIf="data.showPositions">
+                      <td colspan="5">
+                        <ng-container *ngIf="data.positionList.length > 0">
+                          <div class="px-3 py-2">
+                            <div
+                              class="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 rounded-sm"
+                            >
+                              <table
+                                class="min-w-full divide-y divide-gray-300"
+                              >
+                                <thead class="bg-gray-50">
+                                  <tr>
+                                    <th
+                                      scope="col"
+                                      class="px-3 py-2 text-left text-sm font-semibold text-gray-900"
+                                      data-sort="desc"
+                                    >
+                                      Product
+                                    </th>
+                                    <th
+                                      scope="col"
+                                      class="px-3 py-2 text-left text-sm font-semibold text-gray-900"
+                                      data-sort="desc"
+                                    >
+                                      Instrument
+                                    </th>
+                                    <th
+                                      scope="col"
+                                      class="px-3 py-2 text-left text-sm font-semibold text-gray-900"
+                                      data-sort="desc"
+                                    >
+                                      Qty.
+                                    </th>
+                                    <th
+                                      scope="col"
+                                      class="px-3 py-2 text-left text-sm font-semibold text-gray-900"
+                                      data-sort="desc"
+                                      style="min-width: 100px"
+                                    >
+                                      Avg.
+                                    </th>
+                                    <th
+                                      scope="col"
+                                      class="px-3 w-1/6 py-2 text-left text-sm font-semibold text-gray-900"
+                                      data-sort="desc"
+                                    >
+                                      LTP
+                                    </th>
+                                    <th
+                                      scope="col"
+                                      class="px-3 w-1/6 py-2 text-left text-sm font-semibold text-gray-900"
+                                      data-sort="desc"
+                                    >
+                                      P&L
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody
+                                  class="divide-y divide-gray-200 bg-white"
+                                >
+                                  <tr
+                                    *ngFor="
+                                      let item of data.positionList;
+                                      let i = index
+                                    "
+                                  >
+                                    <td
+                                      class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
+                                    >
+                                      <span class="buy-tab"
+                                        >{{ item.orderType | uppercase }}
+                                      </span>
+                                    </td>
+                                    <td
+                                      class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
+                                    >
+                                      {{ item.alias }}
+                                      <small class="text-uppercase">{{
+                                        item.expiry | date : "dd MMM"
+                                      }}</small>
+                                    </td>
+                                    <td
+                                      class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
+                                    >
+                                      {{ item.quantity }}
+                                    </td>
+
+                                    <td
+                                      class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
+                                    >
+                                      {{ item.avg | number : "1.2-2" }}
+                                    </td>
+                                    <td
+                                      class="whitespace-nowrap px-3 py-1 text-sm text-gray-500"
+                                    >
+                                      {{ item.ltp | number : "1.2-2" }}
+                                    </td>
+                                    <td
+                                      class="whitespace-nowrap px-3 py-1 text-sm text-gray-500 text-left border-l"
+                                    >
+                                      {{ item.pandl | number : "1.2-2" }}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

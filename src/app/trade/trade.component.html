@@ -1,0 +1,2808 @@
+<div class="w-full">
+  <mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
+</div>
+<div class="sm:w-11/12 w-full bg-gray-50 mx-auto mt-4">
+  <div class="card">
+    <div class="card-body">
+      <div
+        class="grid grid-cols-1 lg:grid-cols-6 md:gap-4"
+        [ngClass]="order ? 'lg:grid-cols-8' : 'lg:grid-cols-6'"
+      >
+        <div
+          *ngIf="
+            (loadAsMobile && selectedMobileMenuSection == 'watchlist') ||
+            !loadAsMobile
+          "
+          class="border border-gray-100 col-span-2 rounded-md bg-white container relative"
+        >
+          <div class="container overflow-y-auto">
+            <div class="w-full flex border-b">
+              <button
+                (click)="filterWatchLists('straddle')"
+                [ngClass]="
+                  selectedWatchListSection == 'straddle'
+                    ? 'font-bold'
+                    : 'font-light'
+                "
+                class="grow ring-1 ring-gray-200 hover:ring-gray-300 py-3 lg:px-2 px-1 bg-white text-xs my-0 hover:bg-gray-100"
+              >
+                Straddle
+              </button>
+              <!-- <button (click)="filterWatchLists('ironfly')" [ngClass]="
+                  selectedWatchListSection == 'ironfly'
+                    ? 'font-bold'
+                    : 'font-light'
+                "
+                class="grow ring-1 ring-gray-200 hover:ring-gray-300 py-3 lg:px-2 px-1 bg-white text-xs my-0 hover:bg-gray-100">
+                Iron Fly
+              </button> -->
+              <button
+                (click)="filterWatchLists('options')"
+                [ngClass]="
+                  selectedWatchListSection == 'options'
+                    ? 'font-bold'
+                    : 'font-light'
+                "
+                class="grow ring-1 ring-gray-200 hover:ring-gray-300 py-3 lg:px-2 px-1 bg-white text-xs my-0 hover:bg-gray-100"
+              >
+                Options
+              </button>
+
+              <button
+                (click)="filterWatchLists('watchlist')"
+                [ngClass]="
+                  selectedWatchListSection == 'watchlist'
+                    ? 'font-bold'
+                    : 'font-light'
+                "
+                class="grow ring-1 ring-gray-200 hover:ring-gray-300 py-3 lg:px-2 px-1 bg-white text-xs my-0 hover:bg-gray-100"
+              >
+                Watchlist
+              </button>
+            </div>
+
+            <div
+              class="list-group-item p-0"
+              *ngIf="selectedWatchListSection == 'watchlist'"
+            >
+              <div class="flex">
+                <input
+                  type="text"
+                  class="w-full border-gray-300 shadow-sm focus:border-gray-300 focus:ring-gray-300 sm:text-sm"
+                  (click)="showSearchList = true"
+                  placeholder="Search"
+                  [formControl]="searchControl"
+                  (input)="search($event)"
+                />
+              </div>
+            </div>
+
+            <div
+              class="list-group-item hover:bg-white"
+              *ngIf="
+                !(showSearchList || selectedWatchListSection == 'watchlist')
+              "
+            >
+              <div
+                class="grid grid-cols-2 m-0 hover:bg-white border-b border-gray-200"
+              >
+                <div class="">
+                  <div
+                    class="w-full flex p-2 gap-2"
+                    *ngIf="selectedSymbol == 'NIFTY 50'"
+                  >
+                    <button
+                      *ngFor="let expiry of expiries"
+                      (click)="selectExpiry(expiry)"
+                      [ngClass]="
+                        selectedExpiry == expiry ? 'font-bold' : 'font-light'
+                      "
+                      class="flex text-gray-800 py-2 lg:px-3 px-1 bg-white text-xs my-0 border-none ring-1 ring-gray-200 rounded-md hover:bg-gray-50 hover:text-gray-500"
+                    >
+                      {{ expiry | date : "dd MMM" }}
+                    </button>
+                  </div>
+                  <div
+                    class="w-full flex p-2 gap-2"
+                    *ngIf="selectedSymbol == 'NIFTY BANK'"
+                  >
+                    <button
+                      *ngFor="let expiry of bankNiftyExpiries"
+                      (click)="selectExpiry(expiry)"
+                      [ngClass]="
+                        selectedBankNiftyExpiry == expiry
+                          ? 'font-bold'
+                          : 'font-light'
+                      "
+                      class="flex text-gray-800 py-2 lg:px-3 px-1 bg-white text-xs my-0 border-none ring-1 ring-gray-200 rounded-md hover:bg-gray-50 hover:text-gray-500"
+                    >
+                      {{ expiry | date : "dd MMM" }}
+                    </button>
+                  </div>
+                  <div
+                    class="w-full flex p-2 gap-2"
+                    *ngIf="selectedSymbol == 'NIFTY FIN SERVICE'"
+                  >
+                    <button
+                      *ngFor="let expiry of finniftyExpiries"
+                      (click)="selectExpiry(expiry)"
+                      [ngClass]="
+                        selectedFINNIFTYExpiry == expiry
+                          ? 'font-bold'
+                          : 'font-light'
+                      "
+                      class="flex text-gray-800 py-2 lg:px-3 px-1 bg-white text-xs my-0 border-none ring-1 ring-gray-200 rounded-md hover:bg-gray-50 hover:text-gray-500"
+                    >
+                      {{ expiry | date : "dd MMM" }}
+                    </button>
+                  </div>
+                  <div
+                    class="w-full flex p-2 gap-2"
+                    *ngIf="selectedSymbol == 'MIDCPNIFTY'"
+                  >
+                    <button
+                      *ngFor="let expiry of midCPNiftyExpiries"
+                      (click)="selectExpiry(expiry)"
+                      [ngClass]="
+                        selectedMIDCPNIFTYExpiry == expiry
+                          ? 'font-bold'
+                          : 'font-light'
+                      "
+                      class="flex text-gray-800 py-2 lg:px-3 px-1 bg-white text-xs my-0 border-none ring-1 ring-gray-200 rounded-md hover:bg-gray-50 hover:text-gray-500"
+                    >
+                      {{ expiry | date : "dd MMM" }}
+                    </button>
+                  </div>
+                </div>
+                <div class="flex w-full">
+                  <div class="p-2 text-xs mt-2 ml-auto">
+                    <span>Sort By : </span>
+                  </div>
+                  <div class="text-right py-3 ml-auto">
+                    <button
+                      (click)="sort('symbol')"
+                      class="mx-1 ring-1 ring-gray-200 hover:ring-gray-300 rounded-md bg-white text-xs px-2 py-1"
+                    >
+                      A-Z
+                    </button>
+                    <button
+                      (click)="sort('changePercentage')"
+                      class="mx-1 ring-1 ring-gray-200 hover:ring-gray-300 rounded-md bg-white text-xs px-3 py-1"
+                    >
+                      %
+                    </button>
+                    <button
+                      (click)="sort('ltp')"
+                      class="mx-1 ring-1 ring-gray-200 hover:ring-gray-300 rounded-md bg-white text-xs px-2 py-1"
+                    >
+                      LTP
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="overflow-y-auto inner-container">
+              <ng-container *ngFor="let val of mocktradeList; let j = index">
+                <ng-container *ngIf="j == pageNumber - 1">
+                  <ng-container
+                    *ngIf="
+                      !(
+                        showSearchList &&
+                        selectedWatchListSection == 'watchlist'
+                      )
+                    "
+                  >
+                    <ng-container
+                      *ngFor="let item of val.watchLists; let i = index"
+                    >
+                      <div
+                        class="border-b border-gray-200 text-sm list-group-item"
+                        *ngIf="item.display"
+                      >
+                        <div
+                          class="flex w-full p-2 py-3 relative"
+                          [ngClass]="
+                            selectedWatchListSection == 'options' &&
+                            item.alias?.endsWith('CE')
+                              ? 'bg-gray-100'
+                              : 'bg-white'
+                          "
+                        >
+                          <div class="grow">
+                            <span
+                              class=""
+                              [ngClass]="
+                                item.changePercentage >= 0
+                                  ? 'text-green-400'
+                                  : 'text-red-400'
+                              "
+                              >{{ item.alias }}
+                              <small
+                                class="text-uppercase text-gray-400 font-bold"
+                                >{{ item.expiry | date : "dd MMM" }}</small
+                              ></span
+                            >
+                          </div>
+                          <div class="grow text-right">
+                            <span>
+                              <span class="dim"
+                                >{{ item.changePercentage | number : "1.2-2" }}
+                                <span class="text-xs">%</span></span
+                              >
+                            </span>
+                            <!---->
+                            <i
+                              [class.fa-chevron-up]="item.changePercentage >= 0"
+                              [class.text-green-400]="
+                                item.changePercentage >= 0
+                              "
+                              [class.fa-chevron-down]="
+                                item.changePercentage < 0
+                              "
+                              [class.text-red-400]="item.changePercentage < 0"
+                              class="fas mr-3 pl-1"
+                            ></i>
+                            <!-- <i class="fas fa-chevron-down mr-3 pl-1 text-red-400"
+                                          *ngIf="item.changePercentage<0"></i> -->
+                            <!-- <span class="change-indicator icon icon-chevron-down"></span> -->
+                            <span
+                              class=""
+                              [ngClass]="
+                                item.changePercentage >= 0
+                                  ? 'text-green-400'
+                                  : 'text-red-400'
+                              "
+                              >{{ item.ltp | number : "1.2-2" }}</span
+                            >
+                          </div>
+                          <div
+                            class="toolbar w-100 relative left-0 top-0 -mt-2"
+                          >
+                            <span class="princing-btn-list">
+                              <button
+                                *ngIf="selectedWatchListSection == 'watchlist'"
+                                (click)="move(item, 'up', pageNumber, i)"
+                                type="button"
+                                class="ring-1 ring-gray-100 hover:ring-gray-300 rounded-md px-2 py-1px-2 my-0 bg-white hover:bg-gray-100"
+                                placement="top"
+                                ngbTooltip="Move Up"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  class="w-6 h-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                  />
+                                </svg>
+                              </button>
+                              <button
+                                *ngIf="selectedWatchListSection == 'watchlist'"
+                                (click)="move(item, 'down', pageNumber, i)"
+                                type="button"
+                                class="ring-1 ring-gray-100 hover:ring-gray-300 mx-1 rounded-md px-2 py-1 my-0 bg-white hover:bg-gray-100"
+                                placement="top"
+                                ngbTooltip="Move Down"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  class="w-6 h-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                  />
+                                </svg>
+                              </button>
+                              <button
+                                (click)="buyOrSellStockPopUp(item, 'buy')"
+                                type="button"
+                                class="ring-1 ring-gray-100 hover:ring-gray-300 mx-1 rounded-md px-3 py-1 my-0 bg-blue-300 hover:bg-blue-400"
+                                placement="top"
+                                ngbTooltip="Buy (B)"
+                                *ngIf="item.lotSize"
+                              >
+                                B
+                              </button>
+
+                              <button
+                                (click)="buyOrSellStockPopUp(item, 'sell')"
+                                type="button"
+                                class="ring-1 ring-gray-100 hover:ring-gray-300 rounded-md px-3 py-1 mx-1 my-0 bg-orange-300 hover:bg-orange-400"
+                                placement="top"
+                                ngbTooltip="Sell (S)"
+                                *ngIf="item.lotSize"
+                              >
+                                S
+                              </button>
+                              <button
+                                type="button"
+                                class="ring-1 rounded-md px-2 py-1 mx-1 my-0 hover:bg-gray-100 bg-white ring-gray-100 hover:ring-gray-300"
+                                (click)="showListRowDetail(i)"
+                                placement="top"
+                                ngbTooltip="Market Depth (D)"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  class="w-6 h-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0l4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0l-5.571 3-5.571-3"
+                                  />
+                                </svg>
+                              </button>
+
+                              <button
+                                *ngIf="selectedWatchListSection == 'watchlist'"
+                                type="button"
+                                class="ring-1 ring-gray-100 hover:ring-gray-300 rounded-md bg-white px-2 py-1 mx-1 my-0 hover:bg-gray-100"
+                                placement="top"
+                                ngbTooltip="Delete"
+                                (click)="deleteDataFromWatchList(i, item)"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  class="w-6 h-6 text-red-500"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                  />
+                                </svg>
+                              </button>
+                            </span>
+                          </div>
+                        </div>
+
+                        <div class="" *ngIf="showMarketDepthList == i">
+                          <div class="bg-white">
+                            <div class="bg-gray-100 p-3" *ngIf="item.lotSize">
+                              <div
+                                class="grid grid-cols-4 gap-4"
+                                *ngFor="let bid of item.marketDepth"
+                              >
+                                <div>
+                                  <div class="uppercase">Bid</div>
+                                  <div class="text-blue-500">
+                                    {{ bid.bidPrice | number : "1.2-2" }}
+                                  </div>
+                                </div>
+                                <div>
+                                  <div class="uppercase">Qty.</div>
+                                  <div class="text-blue-500">
+                                    {{ bid.bidQty }}
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <div class="uppercase">Offer</div>
+                                  <div class="text-red-500">
+                                    {{ bid.askPrice | number : "1.2-2" }}
+                                  </div>
+                                </div>
+                                <div>
+                                  <div class="uppercase">Qty.</div>
+                                  <div class="text-red-500">
+                                    {{ bid.askQty }}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="p-3 bg-white">
+                              <div class="grid grid-cols-1">
+                                <div class="d-flex-space">
+                                  <div
+                                    class="six columns d-flex-space"
+                                    *ngIf="item.open"
+                                  >
+                                    <label>Open</label>
+                                    <span class="value">{{
+                                      item.open | number : "1.2-2"
+                                    }}</span>
+                                  </div>
+                                  <div
+                                    class="six columns d-flex-space"
+                                    *ngIf="item.high"
+                                  >
+                                    <label>High</label>
+                                    <span class="value">{{
+                                      item.high | number : "1.2-2"
+                                    }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="grid grid-cols-1">
+                                <div class="d-flex-space">
+                                  <div
+                                    class="six columns d-flex-space"
+                                    *ngIf="item.low"
+                                  >
+                                    <label>Low</label>
+                                    <span class="value">{{
+                                      item.low | number : "1.2-2"
+                                    }}</span>
+                                  </div>
+                                  <div
+                                    class="six columns d-flex-space"
+                                    *ngIf="item.previousClose"
+                                  >
+                                    <label>Prev. Close</label>
+                                    <span class="value">{{
+                                      item.previousClose | number : "1.2-2"
+                                    }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+              <ng-container
+                *ngIf="
+                  showSearchList && selectedWatchListSection == 'watchlist'
+                "
+              >
+                <div
+                  class="relative border border-gray-200 overflow-y-scroll"
+                  style="height: 67vh"
+                >
+                  <div
+                    class="border-b border-gray-200 text-sm list-group-item bg-white top-2"
+                    *ngFor="let item of tradeList"
+                  >
+                    <div class="flex w-full p-2 py-3 relative top-1">
+                      <span
+                        class="nice-name"
+                        (click)="addSymbolInWatchList(item, null)"
+                        >{{ item.alias
+                        }}<small
+                          class="text-uppercase text-gray-400 font-bold ml-3"
+                          >{{ item.expiry | date : "dd MMM" }}</small
+                        ></span
+                      >
+                      <span class="princing-btn-list">
+                        <button
+                          (click)="addSymbolInWatchList(item, 'buy')"
+                          type="button"
+                          class="ring-1 ring-gray-100 hover:ring-gray-300 mx-1 rounded-md px-3 py-1 my-0 bg-blue-300 hover:bg-blue-400"
+                          placement="bottom"
+                          ngbTooltip="Buy (B)"
+                          *ngIf="item.lotSize"
+                        >
+                          B
+                        </button>
+
+                        <button
+                          (click)="addSymbolInWatchList(item, 'sell')"
+                          type="button"
+                          class="ring-1 ring-gray-100 hover:ring-gray-300 mx-1 rounded-md px-3 py-1 my-0 bg-orange-300 hover:bg-orange-400"
+                          placement="bottom"
+                          ngbTooltip="Sell (S)"
+                          *ngIf="item.lotSize"
+                        >
+                          S
+                        </button>
+
+                        <button
+                          type="button"
+                          class="ring-1 ring-gray-100 hover:ring-gray-300 mx-1 rounded-md px-3 py-1 my-0 bg-white hover:bg-gray-100"
+                          placement="bottom"
+                          ngbTooltip="Add"
+                          (click)="addSymbolInWatchList(item, null)"
+                          [disabled]="item.addbtn"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="w-6 h-6"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+
+          <div
+            class="absolute bottom-0 w-full"
+            role="toolbar"
+            aria-label="Toolbar with button groups"
+          >
+            <div class="flex w-full" role="group" aria-label="First group">
+              <button
+                *ngFor="let page of watchListArray; let p = index"
+                type="button"
+                class="grow ring-1 ring-gray-200 hover:ring-gray-300 py-3 lg:px-2 px-1 bg-white text-xs font-semibold my-0 hover:bg-gray-100"
+                [class.text-red-400]="pageNumber == p + 1"
+                (click)="selectedWatchList(p + 1)"
+              >
+                {{ mocktradeList[p]?.name }}
+              </button>
+            </div>
+          </div>
+        </div>
+        <div
+          class="border border-gray-100 rounded-md lg:col-span-4 col-span-2 mt-2 md:mt-0 bg-white"
+          (click)="removeSearchList()"
+          *ngIf="
+            (loadAsMobile && selectedMobileMenuSection == 'orders') ||
+            !loadAsMobile
+          "
+        >
+          <div>
+            <div
+              class="col-span-2 grid grid-cols-11 ring-1 ring-gray-200 px-4 py-3 text-sm"
+            >
+              <div
+                class="flex md:flex-row flex-col gap-4 w-full col-span-7"
+                *ngIf="selectedSymbol == 'NIFTY 50'"
+              >
+                <span class="mr-2 font-semibold text-gray-500">NIFTY 50</span>
+                <div class="ml-auto flex gap-4" *ngIf="NIFTYPRICES">
+                  <div>
+                    <span class="mr-2 font-thin text-gray-600">Spot:</span>
+                    <span>{{ NIFTYPRICES.ltp | number : "1.2-2" }} </span>
+
+                    <span
+                      class="font-semibold ml-auto"
+                      [ngClass]="
+                        NIFTYPRICES.changePercentage > 0
+                          ? 'text-green-800'
+                          : 'text-red-600'
+                      "
+                      >({{
+                        NIFTYPRICES.changePercentage | number : "1.2-2"
+                      }}%)</span
+                    >
+                  </div>
+                  <div>
+                    <span class="mr-2 font-thin text-gray-600">Fut:</span>
+                    <span>{{ NIFTYPRICES.futLtp | number : "1.2-2" }} </span>
+
+                    <span
+                      class="font-semibold ml-auto"
+                      [ngClass]="
+                        NIFTYPRICES.futChangePercentage > 0
+                          ? 'text-green-800'
+                          : 'text-red-600'
+                      "
+                      >({{
+                        NIFTYPRICES.futChangePercentage | number : "1.2-2"
+                      }}%)</span
+                    >
+                  </div>
+                  <div>
+                    <span class="mr-2 font-thin text-gray-600">IF:</span>
+                    <span>{{ NIFTYPRICES.if | number : "1.2-2" }} </span>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="flex md:flex-row flex-col gap-4 w-full col-span-7"
+                *ngIf="selectedSymbol == 'NIFTY BANK'"
+              >
+                <span class="mr-2 font-semibold text-gray-500">NIFTY BANK</span>
+                <div class="ml-auto flex gap-4" *ngIf="NIFTYBANKPRICES">
+                  <div>
+                    <span class="mr-2 font-thin text-gray-600">Spot:</span>
+                    <span>{{ NIFTYBANKPRICES.ltp | number : "1.2-2" }} </span>
+
+                    <span
+                      class="font-semibold ml-auto"
+                      [ngClass]="
+                        NIFTYBANKPRICES.changePercentage > 0
+                          ? 'text-green-800'
+                          : 'text-red-600'
+                      "
+                      >({{
+                        NIFTYBANKPRICES.changePercentage | number : "1.2-2"
+                      }}%)</span
+                    >
+                  </div>
+                  <div>
+                    <span class="mr-2 font-thin text-gray-600">Fut:</span>
+                    <span
+                      >{{ NIFTYBANKPRICES.futLtp | number : "1.2-2" }}
+                    </span>
+
+                    <span
+                      class="font-semibold ml-auto"
+                      [ngClass]="
+                        NIFTYBANKPRICES.futChangePercentage > 0
+                          ? 'text-green-800'
+                          : 'text-red-600'
+                      "
+                      >({{
+                        NIFTYBANKPRICES.futChangePercentage | number : "1.2-2"
+                      }}%)</span
+                    >
+                  </div>
+                  <div>
+                    <span class="mr-2 font-thin text-gray-600">IF:</span>
+                    <span>{{ NIFTYBANKPRICES.if | number : "1.2-2" }} </span>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="flex md:flex-row flex-col gap-4 w-full col-span-7"
+                *ngIf="selectedSymbol == 'NIFTY FIN SERVICE'"
+              >
+                <span class="mr-2 font-semibold text-gray-500"
+                  >NIFTY FIN SERVICE</span
+                >
+                <div class="ml-auto flex gap-4" *ngIf="NIFTYFINSERVICEPRICES">
+                  <div>
+                    <span class="mr-2 font-thin text-gray-600">Spot:</span>
+                    <span
+                      >{{ NIFTYFINSERVICEPRICES.ltp | number : "1.2-2" }}
+                    </span>
+
+                    <span
+                      class="font-semibold ml-auto"
+                      [ngClass]="
+                        NIFTYFINSERVICEPRICES.changePercentage > 0
+                          ? 'text-green-800'
+                          : 'text-red-600'
+                      "
+                      >({{
+                        NIFTYFINSERVICEPRICES.changePercentage
+                          | number : "1.2-2"
+                      }}%)</span
+                    >
+                  </div>
+                  <div>
+                    <span class="mr-2 font-thin text-gray-600">Fut:</span>
+                    <span
+                      >{{ NIFTYFINSERVICEPRICES.futLtp | number : "1.2-2" }}
+                    </span>
+
+                    <span
+                      class="font-semibold ml-auto"
+                      [ngClass]="
+                        NIFTYFINSERVICEPRICES.futChangePercentage > 0
+                          ? 'text-green-800'
+                          : 'text-red-600'
+                      "
+                      >({{
+                        NIFTYFINSERVICEPRICES.futChangePercentage
+                          | number : "1.2-2"
+                      }}%)</span
+                    >
+                  </div>
+                  <div>
+                    <span class="mr-2 font-thin text-gray-600">IF:</span>
+                    <span
+                      >{{ NIFTYFINSERVICEPRICES.if | number : "1.2-2" }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="flex md:flex-row flex-col gap-4 w-full col-span-7"
+                *ngIf="selectedSymbol == 'MIDCPNIFTY'"
+              >
+                <span class="mr-2 font-semibold text-gray-500">MIDCPNIFTY</span>
+                <div class="ml-auto flex gap-4" *ngIf="MIDCPNIFTYPRICES">
+                  <div>
+                    <span class="mr-2 font-thin text-gray-600">Spot:</span>
+                    <span>{{ MIDCPNIFTYPRICES.ltp | number : "1.2-2" }} </span>
+
+                    <span
+                      class="font-semibold ml-auto"
+                      [ngClass]="
+                        MIDCPNIFTYPRICES.changePercentage > 0
+                          ? 'text-green-800'
+                          : 'text-red-600'
+                      "
+                      >({{
+                        MIDCPNIFTYPRICES.changePercentage | number : "1.2-2"
+                      }}%)</span
+                    >
+                  </div>
+                  <div>
+                    <span class="mr-2 font-thin text-gray-600">Fut:</span>
+                    <span
+                      >{{ MIDCPNIFTYPRICES.futLtp | number : "1.2-2" }}
+                    </span>
+
+                    <span
+                      class="font-semibold ml-auto"
+                      [ngClass]="
+                        MIDCPNIFTYPRICES.futChangePercentage > 0
+                          ? 'text-green-800'
+                          : 'text-red-600'
+                      "
+                      >({{
+                        MIDCPNIFTYPRICES.futChangePercentage | number : "1.2-2"
+                      }}%)</span
+                    >
+                  </div>
+                  <div>
+                    <span class="mr-2 font-thin text-gray-600">IF:</span>
+                    <span>{{ MIDCPNIFTYPRICES.if | number : "1.2-2" }} </span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex col-span-3 text-right justify-end">
+                Wallet: {{walletBalance| currency: 'INR'}}
+              </div>
+              <div class="flex col-span-1 text-right">
+                <!-- <span
+                  class="w-6 h-6 rounded-full ml-auto"
+                  [title]="
+                    getTradeSocket().connected ? 'Connected' : 'Disconnected'
+                  "
+                  [ngClass]="
+                    getTradeSocket().connected ? 'bg-green-300' : 'bg-red-300'
+                  "
+                ></span> -->
+                <button
+                  class="bg-green-400 h-6 w-6 text-white px-1 py-1 rounded-md ml-auto"
+                  (click)="refresh()"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-4 h-4"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <mat-tab-group
+            (selectedTabChange)="tabChanged($event)"
+            animation="1s"
+          >
+            <mat-tab label="Orders">
+              <div class="container">
+                <div class="px-1 py-2 sm:pb-2 pb-52 sm:px-3">
+                  <ng-container *ngIf="openOrderList.length > 0">
+                    <div class="flex flex-grow">
+                      <h3 class="mt-3 text-xl mb-3 text-gray-600">
+                        Open Order ({{ openOrderList.length }})
+                      </h3>
+                      <div class="grow">
+                        <button
+                          title="Cancel all"
+                          class="float-right font-bold uppercase mx-1 ring-1 ring-gray-200 hover:ring-gray-300 rounded-md bg-gray-100 hover:bg-gray-200 text-xs px-1 sm:px-2 py-2"
+                          (click)="cancelAll()"
+                        >
+                          Cancel all
+                        </button>
+                      </div>
+                    </div>
+                    <div class="w-full sm:hidden block">
+                      <div
+                        class="grid grid-cols-3 border-y border-gray-100 space-y-1"
+                        *ngFor="let item of openOrderList"
+                      >
+                        <div class="px-2.5 py-1 col-span-2 mb-3">
+                          <div class="pt-1">
+                            <span
+                              class="inline-flex items-center py-1 rounded-md text-xs font-medium text-gray-800 uppercase"
+                              [ngClass]="
+                                item.operationType == 'buy'
+                                  ? 'text-blue-300'
+                                  : 'text-orange-300'
+                              "
+                            >
+                              {{ item.operationType | titlecase }}
+                            </span>
+                            <span
+                              class="bg-gray-100 rounded-md p-1 px-1.2 ml-2 text-xs"
+                            >
+                              {{ item.rateType | uppercase }}
+                            </span>
+
+                            <span
+                              class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-semibold capitalize"
+                              [ngClass]="
+                                item.status == 'executed'
+                                  ? 'text-green-500'
+                                  : item.status == 'rejected'
+                                  ? 'text-red-600'
+                                  : 'text-gray-400'
+                              "
+                              >{{ item.status }}</span
+                            >
+                            <span
+                              class="whitespace-nowrap py-4 text-xs text-gray-500"
+                            >
+                              {{ item.time | date : "shortTime" }}
+                            </span>
+                          </div>
+                          <div class="text-sm font-semibold">
+                            {{ item.alias }}
+                            <small
+                              class="text-uppercase font-light text-gray-400"
+                              >{{ item.expiry | date : "dd MMM" }}</small
+                            >
+                            <!-- <button
+                              *ngIf="item.rateType != 'market'"
+                              title="Remove"
+                              class="ring-1 ring-gray-100 hover:ring-gray-300 rounded-md px-1 float-right bg-red ml-4 text-red-600 py-1"
+                              (click)="removeOrder(item)"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1"
+                                stroke="currentColor"
+                                class="w-4 h-4"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                />
+                              </svg>
+                            </button> -->
+                            <div *ngIf="!item.editMode">
+                              <button
+                                *ngIf="item.rateType != 'market'"
+                                title="Edit"
+                                class="hover:text-gray-300 rounded-md px-1 bg-red ml-0 text-gray-500 py-1"
+                                (click)="editOrder(item)"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  class="w-6 h-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                  />
+                                </svg>
+                              </button>
+
+                              <button
+                                title="Details"
+                                class="hover:text-gray-300 rounded-md px-2 text-gray-500 py-1"
+                                (click)="showOrderDetals(item.id)"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  class="w-6 h-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Zm3.75 11.625a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
+                                  />
+                                </svg>
+                              </button>
+                              <button
+                                *ngIf="item.rateType != 'market'"
+                                title="Remove"
+                                class="hover:text-red-300 rounded-md px-2 text-red-500 py-1"
+                                (click)="removeOrder(item)"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  class="w-6 h-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                            <div *ngIf="item.editMode">
+                              <div>
+                                <div class="mt-2 flex rounded-md shadow-sm">
+                                  <input
+                                    type="number"
+                                    name="price"
+                                    id="price"
+                                    step="0.05"
+                                    min="0"
+                                    [(ngModel)]="item.price"
+                                    class="block w-20 rounded-none rounded-l-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                  />
+                                  <button
+                                    (click)="updateOrder(item)"
+                                    type="button"
+                                    class="relative text-green-600 -ml-px inline-flex items-center gap-x-1.5 p-1 px-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                      stroke-width="1.5"
+                                      stroke="currentColor"
+                                      class="w-6 h-6"
+                                    >
+                                      <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                      />
+                                    </svg>
+                                  </button>
+                                  <button
+                                    (click)="item.editMode = false"
+                                    type="button"
+                                    class="relative text-gray-600 -ml-px inline-flex items-center gap-x-1.5 rounded-r-md p-1 px-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                      stroke-width="1.5"
+                                      stroke="currentColor"
+                                      class="w-6 h-6"
+                                    >
+                                      <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                      />
+                                    </svg>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="text-xs relative text-right">
+                          <span class="block">
+                            ₹{{ item.price | number : "1.2-2" }}
+                          </span>
+                          <div class="px-2.5 inline-block text-right text-xs">
+                            <div class="flex py-2">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="w-6 h-6"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z"
+                                />
+                              </svg>
+                              <span
+                                class="place-content-center text-md py-1.5"
+                                >{{ item.quantity }}</span
+                              >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="overflow-y-scroll sm:block hidden inner-container shadow-sm ring-1 ring-black ring-opacity-5 rounded-sm"
+                    >
+                      <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
+                          <tr>
+                            <th
+                              scope="col"
+                              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                            >
+                              Time
+                            </th>
+
+                            <th
+                              scope="col"
+                              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                            >
+                              Type
+                            </th>
+                            <th
+                              scope="col"
+                              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                            >
+                              Symbol
+                            </th>
+                            <th
+                              scope="col"
+                              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                            >
+                              Order Type
+                            </th>
+                            <th
+                              scope="col"
+                              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                            >
+                              Qty
+                            </th>
+                            <th
+                              scope="col"
+                              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                            >
+                              Price
+                            </th>
+                            <th
+                              scope="col"
+                              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                            >
+                              Status
+                            </th>
+                            <th
+                              scope="col"
+                              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                            >
+                              Actions
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white">
+                          <tr *ngFor="let item of openOrderList; let i = index">
+                            <td
+                              class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                            >
+                              {{ item.time | date : "shortTime" }}
+                            </td>
+
+                            <td
+                              class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                            >
+                              <span
+                                class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium text-gray-800 uppercase"
+                                [ngClass]="
+                                  item.operationType == 'buy'
+                                    ? 'bg-blue-300'
+                                    : 'bg-orange-300'
+                                "
+                                >{{ item.operationType | titlecase }}</span
+                              >
+                            </td>
+
+                            <td
+                              class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-left"
+                            >
+                              {{ item.alias }}
+                              <small class="text-uppercase">{{
+                                item.expiry | date : "dd MMM"
+                              }}</small>
+                            </td>
+
+                            <td
+                              class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                            >
+                              {{ item.rateType | uppercase }}
+                            </td>
+
+                            <td
+                              class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                            >
+                              {{ item.quantity }}
+                            </td>
+
+                            <td
+                              class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                            >
+                              {{ item.price | number : "1.2-2" }}
+                            </td>
+
+                            <td
+                              class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                            >
+                              <span
+                                class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-semibold text-gray-800 capitalize"
+                                [ngClass]="
+                                  item.status == 'executed'
+                                    ? 'text-green-500'
+                                    : item.status == 'rejected'
+                                    ? 'text-red-600'
+                                    : 'text-gray-400'
+                                "
+                                >{{
+                                  item.status == "new" ? "Pending" : item.status
+                                }}</span
+                              >
+                            </td>
+                            <td>
+                              <div *ngIf="!item.editMode">
+                                <button
+                                  *ngIf="item.rateType != 'market'"
+                                  title="Edit"
+                                  class="hover:text-gray-300 rounded-md px-1 bg-red ml-0 text-gray-500 py-1"
+                                  (click)="editOrder(item)"
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="w-6 h-6"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                    />
+                                  </svg>
+                                </button>
+
+                                <button
+                                  title="Details"
+                                  class="hover:text-gray-300 rounded-md px-2 text-gray-500 py-1"
+                                  (click)="showOrderDetals(item.id)"
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="w-6 h-6"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Zm3.75 11.625a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
+                                    />
+                                  </svg>
+                                </button>
+                                <button
+                                  *ngIf="item.rateType != 'market'"
+                                  title="Remove"
+                                  class="hover:text-red-300 rounded-md px-2 text-red-500 py-1"
+                                  (click)="removeOrder(item)"
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    class="w-6 h-6"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                    />
+                                  </svg>
+                                </button>
+                              </div>
+                              <div *ngIf="item.editMode">
+                                <div>
+                                  <div class="mt-2 flex rounded-md shadow-sm">
+                                    <input
+                                      type="number"
+                                      name="price"
+                                      min="0"
+                                      id="price"
+                                    step="0.05"
+                                      [(ngModel)]="item.price"
+                                      class="block w-20 rounded-none rounded-l-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                    <button
+                                      (click)="updateOrder(item)"
+                                      type="button"
+                                      class="relative text-green-600 -ml-px inline-flex items-center gap-x-1.5 p-1 px-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-6 h-6"
+                                      >
+                                        <path
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                        />
+                                      </svg>
+                                    </button>
+                                    <button
+                                    (click)="item.editMode = false"
+                                    type="button"
+                                    class="relative text-gray-600 -ml-px inline-flex items-center gap-x-1.5 rounded-r-md p-1 px-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                      stroke-width="1.5"
+                                      stroke="currentColor"
+                                      class="w-6 h-6"
+                                    >
+                                      <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                      />
+                                    </svg>
+                                  </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </ng-container>
+                  <ng-container
+                    *ngIf="filterOrderList(orderListDisplay).length > 0"
+                  >
+                    <h3 class="mt-3 text-xl mb-3 text-gray-600">
+                      Executed Order ({{
+                        filterOrderList(orderListDisplay).length
+                      }})
+                    </h3>
+                    <div class="w-full sm:hidden block">
+                      <div
+                        class="grid grid-cols-3 border-y border-gray-100 space-y-1"
+                        *ngFor="let item of filterOrderList(orderListDisplay)"
+                      >
+                        <div class="px-2.5 py-1 col-span-2 mb-3">
+                          <div class="text-sm font-semibold">
+                            {{ item.alias }}
+                            <small
+                              class="text-uppercase font-light text-gray-400"
+                              >{{ item.expiry | date : "dd MMM" }}</small
+                            >
+                          </div>
+                          <div class="pt-1">
+                            <span
+                              class="inline-flex items-center py-1 rounded-md text-xs font-medium text-gray-800 uppercase"
+                              [ngClass]="
+                                item.operationType == 'buy'
+                                  ? 'text-blue-300'
+                                  : 'text-orange-300'
+                              "
+                            >
+                              {{ item.operationType | titlecase }}
+                            </span>
+                            <span
+                              class="bg-gray-100 rounded-md p-1 px-1.2 ml-2 text-xs"
+                            >
+                              {{ item.rateType | uppercase }}
+                            </span>
+
+                            <span
+                              class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-semibold capitalize"
+                              [ngClass]="
+                                item.status == 'executed'
+                                  ? 'text-green-500'
+                                  : item.status == 'rejected'
+                                  ? 'text-red-600'
+                                  : 'text-gray-400'
+                              "
+                              >{{ item.status }}</span
+                            >
+                            <span
+                              class="whitespace-nowrap py-4 text-xs text-gray-500"
+                            >
+                              {{ item.executionTime | date : "shortTime" }}
+                            </span>
+                          </div>
+                        </div>
+                        <div class="text-xs relative text-right">
+                          <span class="block">
+                            ₹{{ item.price | number : "1.2-2" }}
+                          </span>
+                          <div class="px-2.5 inline-block text-right text-xs">
+                            <div class="flex py-2">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="w-6 h-6"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z"
+                                />
+                              </svg>
+                              <span
+                                class="place-content-center text-md py-1.5"
+                                >{{ item.quantity }}</span
+                              >
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="overflow-y-scroll sm:block hidden inner-container shadow-sm ring-1 ring-black ring-opacity-5 rounded-sm"
+                    >
+                      <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
+                          <tr>
+                            <th
+                              scope="col"
+                              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                              data-sort="desc"
+                              (click)="handleSort('time', $event)"
+                            >
+                              Time<i class="fa fa-caret-up"></i>
+                            </th>
+                           
+                            <th
+                              scope="col"
+                              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                              data-sort="desc"
+                              (click)="handleSort('operationType', $event)"
+                            >
+                              Type<i class="fa fa-caret-up"></i>
+                            </th>
+                            <th
+                              scope="col"
+                              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                              data-sort="desc"
+                              (click)="handleSort('alias', $event)"
+                            >
+                              Symbol<i class="fa fa-caret-up"></i>
+                            </th>
+                            <th
+                              scope="col"
+                              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                            >
+                              Order Type
+                            </th>
+                            <th
+                              scope="col"
+                              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                              data-sort="desc"
+                              (click)="handleSort('quantity', $event)"
+                            >
+                              Qty<i class="fa fa-caret-up"></i>
+                            </th>
+                            <th
+                              scope="col"
+                              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                              data-sort="desc"
+                              (click)="handleSort('price', $event)"
+                            >
+                              Price<i class="fa fa-caret-up"></i>
+                            </th>
+                            <th
+                              scope="col"
+                              class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                            >
+                              Status
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white">
+                          <ng-container>
+                            <tr
+                              class="cursor-pointer"
+                              (click)="showOrderDetals(item.id)"
+                              *ngFor="
+                                let item of filterOrderList(orderListDisplay)
+                              "
+                            >
+                             
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                {{ item.time | date : "shortTime" }}
+                              </td>
+
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                <span
+                                  class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium text-gray-800 uppercase"
+                                  [ngClass]="
+                                    item.operationType == 'buy'
+                                      ? 'bg-blue-300'
+                                      : 'bg-orange-300'
+                                  "
+                                  >{{ item.operationType | titlecase }}</span
+                                >
+                              </td>
+
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-left"
+                              >
+                                {{ item.alias }}
+                                <small class="text-uppercase">{{
+                                  item.expiry | date : "dd MMM"
+                                }}</small>
+                              </td>
+
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                {{ item.rateType | uppercase }}
+                              </td>
+
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                {{ item.quantity }}
+                              </td>
+
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                {{ item.price | number : "1.2-2" }}
+                              </td>
+
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                <span
+                                  class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-semibold capitalize"
+                                  [ngClass]="
+                                    item.status == 'executed'
+                                      ? 'text-green-500'
+                                      : item.status == 'rejected'
+                                      ? 'text-red-600'
+                                      : 'text-gray-400'
+                                  "
+                                  >{{ item.status }}</span
+                                >
+                              </td>
+                            </tr>
+                          </ng-container>
+                        </tbody>
+                      </table>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </mat-tab>
+
+            <mat-tab label="Positions">
+              <div class="container">
+                <div class="px-1 py-2 sm:pb-2 pb-52 sm:px-3">
+                  <ng-container
+                    *ngIf="filterPositions(positionList).length > 0"
+                  >
+                    <div class="grid sm:grid-cols-4 my-3 grid-cols-2">
+                      <div class="col-span-2">
+                        <h3 class="text-xl text-gray-600">
+                          Open Positions ({{
+                            getFilteredPositions("open").length
+                          }})
+                        </h3>
+                      </div>
+
+                      <div class="sm:text-right text-left">
+                        <span class="py-3 text-sm font-bold">
+                          Total MTM :
+                          {{
+                            getpnlsum("open") -
+                              (brokerage + buyingAmount + sellingAmount) +
+                              getpnlsum("closed") -
+                              (brokerage + buyingAmount + sellingAmount)
+                              | number : "1.2-2"
+                          }}</span
+                        >
+                      </div>
+                      <div class="text-right mt-2 sm:mt-0">
+                        <div class="flex flex-rows">
+                          <select
+                            [formControl]="exitPercentage"
+                            class="w-fit ml-auto border-gray-300 shadow-sm focus:border-gray-300 focus:ring-gray-300 sm:text-sm text-xs"
+                          >
+                            <option value="4">100%</option>
+                            <option value="3">75%</option>
+                            <option value="2">50%</option>
+                            <option value="1">25%</option>
+                          </select>
+                          <button
+                            title="Exit all"
+                            [disabled]="loading"
+                            [ngClass]="
+                              loading
+                                ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                                : ''
+                            "
+                            class="font-bold uppercase mx-1 ring-1 ring-gray-200 hover:ring-gray-300 rounded-md bg-gray-100 hover:bg-gray-200 sm:text-sm text-xs px-1 sm:px-2 sm:py-2"
+                            (click)="exitAll()"
+                          >
+                            Exit all
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="px-1 py-2 sm:px-3">
+                      <div class="w-full sm:hidden block">
+                        <div
+                          class="grid grid-cols-3 border-y border-gray-100 space-y-1"
+                          *ngFor="let item of getFilteredPositions('open')"
+                        >
+                          <div class="px-2.5 py-1 col-span-2 mb-3">
+                            <div class="text-sm font-semibold">
+                              {{ item.alias }}
+                              <small
+                                class="text-uppercase font-light text-gray-400"
+                                >{{ item.expiry | date : "dd MMM" }}</small
+                              >
+                            </div>
+                            <div class="pt-1">
+                              <span
+                                class="bg-gray-100 text-center rounded-md p-1 px-1.2 text-xs"
+                              >
+                                {{ item.orderType | uppercase }}
+                              </span>
+                              <span
+                                class="inline-flex ml-2 items-center py-1 rounded-md text-xs font-medium text-gray-800"
+                              >
+                                Avg: {{ item.avg }}
+                              </span>
+                              <span
+                                class="inline-flex ml-2 items-center py-1 rounded-md text-xs font-medium text-gray-800"
+                              >
+                                LTP: {{ item.ltp }}
+                              </span>
+                              <span
+                                class="inline-flex ml-2 items-center py-1 rounded-md text-xs font-medium text-gray-800"
+                              >
+                                Qty: {{ item.quantity }}
+                              </span>
+                            </div>
+                          </div>
+                          <div class="text-xs relative text-right">
+                            <span
+                              class="block py-1"
+                              [ngClass]="
+                                item.pandl < 0
+                                  ? 'text-red-600'
+                                  : 'text-green-600'
+                              "
+                            >
+                              P&L: ₹{{ item.pandl | number : "1.2-2" }}
+                            </span>
+                            <button
+                              *ngIf="item.quantity != 0"
+                              title="Exit"
+                              class="mx-1 ring-1 ring-gray-200 hover:ring-gray-300 rounded-md bg-white hover:bg-gray-200 text-sm px-2 py-1"
+                              (click)="exitOrder(item)"
+                            >
+                              Exit
+                            </button>
+                          </div>
+                        </div>
+                        <div class="grid grid-cols-3">
+                          <div class="col-span-2 font-extralight text-right">
+                            Total :
+                          </div>
+                          <div class="text-right font-semibold">
+                            ₹{{
+                              getpnlsum("open") -
+                                (brokerage + buyingAmount + sellingAmount)
+                                | number : "1.2-2"
+                            }}
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        class="overflow-y-scroll hidden sm:block inner-container shadow-sm ring-1 ring-black ring-opacity-5 rounded-sm"
+                      >
+                        <table class="min-w-full divide-y divide-gray-300">
+                          <thead class="bg-gray-50">
+                            <tr>
+                              <th
+                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                              >
+                                <input
+                                  id="select-position-all"
+                                  name="select-position-all"
+                                  type="checkbox"
+                                  (change)="selectAll($event)"
+                                  class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                />
+                              </th>
+                              <th
+                                scope="col"
+                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                data-sort="desc"
+                                (click)="
+                                  handlePositionsSort('orderType', $event)
+                                "
+                              >
+                                Product<i class="fa fa-caret-up"></i>
+                              </th>
+                              <th
+                                scope="col"
+                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                data-sort="desc"
+                                (click)="handlePositionsSort('alias', $event)"
+                              >
+                                Instrument<i class="fa fa-caret-up"></i>
+                              </th>
+                              <th
+                                scope="col"
+                                class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
+                                data-sort="desc"
+                                (click)="
+                                  handlePositionsSort('quantity', $event)
+                                "
+                                colspan="2"
+                              >
+                                Qty.<i class="fa fa-caret-up"></i>
+                              </th>
+                              <th
+                                scope="col"
+                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                data-sort="desc"
+                                (click)="handlePositionsSort('avg', $event)"
+                                style="min-width: 100px"
+                              >
+                                Avg.<i class="fa fa-caret-up"></i>
+                              </th>
+                              <th
+                                scope="col"
+                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                data-sort="desc"
+                                (click)="handlePositionsSort('ltp', $event)"
+                                style="min-width: 100px"
+                              >
+                                LTP<i class="fa fa-caret-up"></i>
+                              </th>
+                              <th
+                                scope="col"
+                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                data-sort="desc"
+                                (click)="handlePositionsSort('pandl', $event)"
+                                style="min-width: 100px"
+                              >
+                                P&L<i class="fa fa-caret-up"></i>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody class="divide-y divide-gray-200 bg-white">
+                            <tr
+                              *ngFor="
+                                let item of getFilteredPositions('open');
+                                let i = index
+                              "
+                            >
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                <div class="flex items-center">
+                                  <input
+                                    id="select-position"
+                                    name="select-position"
+                                    type="checkbox"
+                                    [(ngModel)]="item.checked"
+                                    class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                  />
+                                </div>
+                              </td>
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                <span class="buy-tab">{{
+                                  item.orderType | uppercase
+                                }}</span>
+                              </td>
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                {{ item.alias }}
+                                <small class="text-uppercase">{{
+                                  item.expiry | date : "dd MMM"
+                                }}</small>
+                              </td>
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                {{ item.quantity }}
+                                <!-- <select
+                                *ngIf="item.quantity"
+                                class="w-full border-gray-300 shadow-sm focus:border-gray-300 focus:ring-gray-300 sm:text-sm"
+                                [(ngModel)]="item.selectedQuantity"
+                              >
+                                <option
+                                  *ngFor="let qty of item.ddlQuantity"
+                                  [value]="qty"
+                                >
+                                  {{ qty }}
+                                </option>
+                              </select> -->
+                              </td>
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                <button
+                                  *ngIf="item.quantity != 0"
+                                  title="Exit"
+                                  class="mx-1 ring-1 ring-gray-200 hover:ring-gray-300 rounded-md bg-white hover:bg-gray-200 text-sm px-2 py-2"
+                                  (click)="exitOrder(item)"
+                                >
+                                  Exit
+                                </button>
+                              </td>
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                {{ item.avg | number : "1.2-2" }}
+                              </td>
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                {{
+                                  item.quantity != 0
+                                    ? (item.ltp | number : "1.2-2")
+                                    : ""
+                                }}
+                              </td>
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-left border-l"
+                              >
+                                {{ item.pandl | number : "1.2-2" }}
+                              </td>
+                            </tr>
+                            <!-- <tr>
+                        <td colspan="6"  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-right">P & L</td>
+                        <td  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-left border-l">
+                          {{ getpnlsum() | number : "1.2-2" }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="6"  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-right">Expense</td>
+                        <td  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-left border-l">
+                          {{
+                            brokerage + buyingAmount + sellingAmount
+                              | number : "1.2-2"
+                          }}
+                        </td>
+                      </tr> -->
+                            <tr>
+                              <td
+                                colspan="6"
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-right"
+                              >
+                                Total
+                              </td>
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-left border-l"
+                              >
+                                {{
+                                  getpnlsum("open") -
+                                    (brokerage + buyingAmount + sellingAmount)
+                                    | number : "1.2-2"
+                                }}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <h3 class="mt-3 text-xl mb-3 text-gray-600">
+                      Closed Positions ({{
+                        getFilteredPositions("closed").length
+                      }})
+                    </h3>
+                    <div class="px-1 py-2 sm:px-3">
+                      <div class="w-full sm:hidden block">
+                        <div
+                          class="grid grid-cols-3 border-y border-gray-100 space-y-1"
+                          *ngFor="let item of getFilteredPositions('closed')"
+                        >
+                          <div class="px-2.5 py-1 col-span-2 mb-3">
+                            <div class="text-sm font-semibold">
+                              {{ item.alias }}
+                              <small
+                                class="text-uppercase font-light text-gray-400"
+                                >{{ item.expiry | date : "dd MMM" }}</small
+                              >
+                            </div>
+                            <div class="pt-1">
+                              <span
+                                class="bg-gray-100 text-center rounded-md p-1 px-1.2 text-xs"
+                              >
+                                {{ item.orderType | uppercase }}
+                              </span>
+                              <span
+                                class="inline-flex ml-2 items-center py-1 rounded-md text-xs font-medium text-gray-800"
+                              >
+                                Avg: {{ item.avg }}
+                              </span>
+                              <span
+                                class="inline-flex ml-2 items-center py-1 rounded-md text-xs font-medium text-gray-800"
+                              >
+                                LTP: {{ item.ltp }}
+                              </span>
+                              <span
+                                class="inline-flex ml-2 items-center py-1 rounded-md text-xs font-medium text-gray-800"
+                              >
+                                Qty: {{ item.quantity }}
+                              </span>
+                            </div>
+                          </div>
+                          <div class="text-xs relative text-right">
+                            <span
+                              class="block py-3"
+                              [ngClass]="
+                                item.pandl < 0
+                                  ? 'text-red-600'
+                                  : 'text-green-600'
+                              "
+                            >
+                              P&L: ₹{{ item.pandl | number : "1.2-2" }}
+                            </span>
+                          </div>
+                        </div>
+                        <div class="grid grid-cols-3">
+                          <div class="col-span-2 font-extralight text-right">
+                            Total :
+                          </div>
+                          <div class="text-right font-semibold">
+                            ₹{{
+                              getpnlsum("closed") -
+                                (brokerage + buyingAmount + sellingAmount)
+                                | number : "1.2-2"
+                            }}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        class="overflow-y-scroll hidden sm:block inner-container shadow-sm ring-1 ring-black ring-opacity-5 rounded-sm"
+                      >
+                        <table class="min-w-full divide-y divide-gray-300">
+                          <thead class="bg-gray-50">
+                            <tr>
+                              <th
+                                scope="col"
+                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                data-sort="desc"
+                                (click)="
+                                  handlePositionsSort('orderType', $event)
+                                "
+                              >
+                                Product<i class="fa fa-caret-up"></i>
+                              </th>
+                              <th
+                                scope="col"
+                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                data-sort="desc"
+                                (click)="handlePositionsSort('alias', $event)"
+                              >
+                                Instrument<i class="fa fa-caret-up"></i>
+                              </th>
+                              <th
+                                scope="col"
+                                class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
+                                data-sort="desc"
+                                (click)="
+                                  handlePositionsSort('quantity', $event)
+                                "
+                                colspan="2"
+                              >
+                                Qty.<i class="fa fa-caret-up"></i>
+                              </th>
+                              <th
+                                scope="col"
+                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                data-sort="desc"
+                                (click)="handlePositionsSort('avg', $event)"
+                                style="min-width: 100px"
+                              >
+                                Avg.<i class="fa fa-caret-up"></i>
+                              </th>
+                              <th
+                                scope="col"
+                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                data-sort="desc"
+                                (click)="handlePositionsSort('ltp', $event)"
+                                style="min-width: 100px"
+                              >
+                                LTP<i class="fa fa-caret-up"></i>
+                              </th>
+                              <th
+                                scope="col"
+                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                data-sort="desc"
+                                (click)="handlePositionsSort('pandl', $event)"
+                                style="min-width: 100px"
+                              >
+                                P&L<i class="fa fa-caret-up"></i>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody class="divide-y divide-gray-200 bg-white">
+                            <tr
+                              *ngFor="
+                                let item of getFilteredPositions('closed');
+                                let i = index
+                              "
+                            >
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                <span class="buy-tab">{{
+                                  item.orderType | uppercase
+                                }}</span>
+                              </td>
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                {{ item.alias }}
+                                <small class="text-uppercase">{{
+                                  item.expiry | date : "dd MMM"
+                                }}</small>
+                              </td>
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                {{ item.quantity }}
+                                <!-- <select
+                                *ngIf="item.quantity"
+                                class="w-full border-gray-300 shadow-sm focus:border-gray-300 focus:ring-gray-300 sm:text-sm"
+                                [(ngModel)]="item.selectedQuantity"
+                              >
+                                <option
+                                  *ngFor="let qty of item.ddlQuantity"
+                                  [value]="qty"
+                                >
+                                  {{ qty }}
+                                </option>
+                              </select> -->
+                              </td>
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                <button
+                                  *ngIf="item.quantity != 0"
+                                  title="Exit"
+                                  class="mx-1 ring-1 ring-gray-200 hover:ring-gray-300 rounded-md bg-white hover:bg-gray-200 text-sm px-2 py-2"
+                                  (click)="exitOrder(item)"
+                                >
+                                  Exit
+                                </button>
+                              </td>
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                {{ item.avg | number : "1.2-2" }}
+                              </td>
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                              >
+                                {{
+                                  item.quantity != 0
+                                    ? (item.ltp | number : "1.2-2")
+                                    : ""
+                                }}
+                              </td>
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-left border-l"
+                              >
+                                {{ item.pandl | number : "1.2-2" }}
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td
+                                colspan="6"
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-right"
+                              >
+                                Total
+                              </td>
+                              <td
+                                class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-left border-l"
+                              >
+                                {{
+                                  getpnlsum("closed") -
+                                    (brokerage + buyingAmount + sellingAmount)
+                                    | number : "1.2-2"
+                                }}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </mat-tab>
+            <mat-tab label="Baskets">
+              <div class="container">
+                <div class="px-1 py-2 sm:pb-2 pb-52 sm:px-3">
+                  <div
+                    class="p-3 overflow-y-scroll inner-container shadow-sm ring-1 ring-black ring-opacity-5 rounded-sm"
+                  >
+                    <div class="space-y-8" *ngFor="let item of baskets">
+                      <div
+                        class="border-b border-t border-gray-200 bg-white shadow-sm rounded-lg border"
+                      >
+                        <div
+                          class="py-3 grid grid-cols-12 lg:gap-x-8 bg-gray-100"
+                        >
+                          <div class="sm:flex col-span-7">
+                            <div class="sm:ml-3">
+                              <h3
+                                class="text-lg px-2 font-medium text-gray-900"
+                              >
+                                {{ item.name | titlecase }}
+                              </h3>
+                            </div>
+                          </div>
+
+                          <div class="mt-0 col-span-5 lg:mt-0 text-right">
+                            <div
+                              class="mt-0 ml-auto text-gray-500 gap-2 px-3 flex-shrink"
+                            >
+                              <button
+                                type="button"
+                                (click)="executeBasket(item)"
+                                class="font-medium text-sm shadow-sm bg-gray-50 px-4 ring-gray-300 hover:bg-gray-300 rounded-md py-1 ring-1 text-indigo-600 hover:text-indigo-500"
+                              >
+                                Execute
+                              </button>
+                              <button
+                                type="button"
+                                (click)="removeBasket(item.id)"
+                                class="ml-2 font-medium text-sm shadow-sm ring-1 ring-gray-300 p-1 hover:bg-gray-300 rounded-md text-red-600 hover:text-red-500"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  class="w-4 h-4"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="border-t border-gray-200 px-2 py-1">
+                          <table class="min-w-full divide-y divide-gray-300">
+                            <thead class="bg-white">
+                              <tr>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-1.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Type
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-1.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Symbol
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-1.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Product
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-1.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Qty
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-1.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Price
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-1.5 text-left text-sm font-semibold text-gray-900"
+                                ></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let order of item.orders">
+                                <td
+                                  class="whitespace-nowrap px-3 py-2 text-sm text-gray-500 text-left"
+                                >
+                                  <span
+                                    class="inline-flex items-center px-1.5 py-1 rounded-md text-xs font-medium text-gray-800 uppercase"
+                                    [ngClass]="
+                                      order.operationType == 'buy'
+                                        ? 'bg-blue-300'
+                                        : 'bg-orange-300'
+                                    "
+                                    >{{ order.operationType | uppercase }}</span
+                                  >
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-2 text-sm text-gray-500 text-left"
+                                >
+                                  {{ order.alias
+                                  }}<small
+                                    class="text-uppercase font-light text-gray-400 ml-2"
+                                    >{{ order.expiry | date : "dd MMM" }}</small
+                                  >
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-2 text-sm text-gray-500 text-left"
+                                >
+                                  {{ order.orderType | uppercase }}
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-2 text-sm text-gray-500 text-left"
+                                >
+                                  {{ order.quantity }}
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-2 text-sm text-gray-500 text-left"
+                                >
+                                  {{ order.price }}
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-2 text-sm text-gray-500 text-left"
+                                >
+                                  <button
+                                    title="Delete"
+                                    class="mx-1 text-red-400 text-xs rounded-md bg-white hover:text-red-500"
+                                    (click)="removeBasketOrder(order.id)"
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                      stroke-width="1.5"
+                                      stroke="currentColor"
+                                      class="w-4 h-4"
+                                    >
+                                      <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                      />
+                                    </svg>
+                                  </button>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+        <div class="flex-1 col-span-2" *ngIf="order">
+          <div class="relative">
+            <div class="pt-0 pb-16">
+              <div class="mt-10 md:mt-0 sm:px-6 md:px-0">
+                <section aria-labelledby="billing-history-heading">
+                  <div
+                    class="bg-white pt-6 relative shadow sm:rounded-md sm:overflow-hidden"
+                  >
+                    <div class="px-4 sm:px-6">
+                      <h2
+                        id="billing-history-heading"
+                        class="text-lg leading-6 font-medium text-gray-900"
+                      >
+                        {{ order.alias }}
+                      </h2>
+                      <div class="absolute right-3 top-3">
+                        <svg
+                          *ngIf="order.orderStatus == 'Executed'"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="w-12 h-12 text-green-400"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        <svg
+                          *ngIf="order.orderStatus != 'Executed'"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="w-12 h-12 text-red-400"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div class="mt-6 flex flex-col">
+                      <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <div
+                          class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8"
+                        >
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Product</div>
+                            <div class="text-right">
+                              {{ order.product | uppercase }}
+                            </div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Rate Type</div>
+                            <div class="text-right">
+                              {{ order.rateType | titlecase }}
+                            </div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Operation Type</div>
+                            <div class="text-right">
+                              {{ order.operationType | titlecase }}
+                            </div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Input Price</div>
+                            <div class="text-right">
+                              {{ order.userPrice | number : "1.2-2" }}
+                            </div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Trigger Price</div>
+                            <div class="text-right">
+                              {{ order.triggerPrice | number : "1.2-2" }}
+                            </div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Target</div>
+                            <div class="text-right">
+                              {{ order.targetPrice | number : "1.2-2" }}
+                            </div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Stop Loss</div>
+                            <div class="text-right">
+                              {{ order.stopLoss | number : "1.2-2" }}
+                            </div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Quantity</div>
+                            <div class="text-right">{{ order.quantity }}</div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Order Status</div>
+                            <div class="text-right">
+                              {{ order.orderStatus | titlecase }}
+                            </div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Executed Quantity</div>
+                            <div class="text-right">
+                              {{ order.executedQuantity }}
+                            </div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Execution Price</div>
+                            <div class="text-right">
+                              {{ order.executionprice | number : "1.2-2" }}
+                            </div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Order Time</div>
+                            <div class="text-right">{{ order.orderTime }}</div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Exchange Time</div>
+                            <div class="text-right">
+                              {{ order.exchangeTime }}
+                            </div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Execution Time</div>
+                            <div class="text-right">
+                              {{ order.executionTime }}
+                            </div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Order Id</div>
+                            <div class="text-right">{{ order.orderId }}</div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Unique Identifier</div>
+                            <div class="text-right">
+                              {{ order.guid | titlecase }}
+                            </div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Exchange Order Id</div>
+                            <div class="text-right">
+                              {{ order.exchangeOrderId }}
+                            </div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Leg 1</div>
+                            <div class="text-right">{{ order.leg1 }}</div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Leg 2</div>
+                            <div class="text-right">{{ order.leg2 }}</div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Leg 3</div>
+                            <div class="text-right">{{ order.leg3 }}</div>
+                          </div>
+                          <div
+                            class="overflow-hidden grid grid-cols-2 border-t border-gray-200 p-2"
+                          >
+                            <div>Leg 4</div>
+                            <div class="text-right">{{ order.leg4 }}</div>
+                          </div>
+                          <div
+                            class="overflow-hidden border-t border-gray-200 p-2"
+                          >
+                            <button
+                              (click)="order = undefined"
+                              class="float-right font-bold px-5 uppercase mx-1 ring-1 ring-gray-200 hover:ring-gray-300 rounded-md bg-gray-100 hover:bg-gray-200 text-sm py-2"
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="mock-container px-2" *ngIf="selectedWatchListElement">
+  <div
+    class="main-price-poup sm:w-1/3 w-full"
+    cdkDragRootElement=".cdk-overlay-pane"
+    cdkDrag
+  >
+    <form (submit)="_buyOrSellStock()">
+      <div
+        class="pop-head p-3 m-0 text-white font-weight-bold bg-primary"
+        cdkDragHandle
+        [ngClass]="buyOrSellModel.sell ? 'bg-orange-600' : 'bg-blue-600'"
+      >
+        <div class="flex">
+          <span *ngIf="!buyOrSellModel.sell">BUY</span>
+          <span *ngIf="buyOrSellModel.sell">SELL</span>
+          <span class="ml-2">{{ selectedWatchListElement.alias }}</span>
+          <span
+            ><sub>
+              ({{ selectedWatchListElement.expiry | date : "dd MMM" }})</sub
+            ></span
+          >
+          <div class="ml-auto" *ngIf="!buyOrSellModel.isExitOrder">
+            <mat-slide-toggle
+              [ngModelOptions]="{ standalone: true }"
+              [(ngModel)]="buyOrSellModel.sell"
+              class="mr-2"
+            ></mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+      <div class="pop-body">
+        <div class="grid grid-cols-3 m-3">
+          <div class="col-span-2 inline-flex">
+            <label
+              class="radio-inline mr-3 check-btn"
+              *ngIf="
+                selectedWatchListSection == 'options' ||
+                selectedWatchListSection == 'watchlist' ||
+                selectedWatchListSection == 'ironfly' ||
+                selectedWatchListSection == 'straddle'
+              "
+            >
+              <input
+                class="mr-2"
+                type="radio"
+                name="orderType"
+                value="mis"
+                [ngModelOptions]="{ standalone: true }"
+                [(ngModel)]="buyOrSellModel.orderType"
+              />MIS
+            </label>
+            <!-- <label
+            class="radio-inline mr-3 check-btn"
+            *ngIf="selectedWatchListSection == 'watchlist'"
+          >
+            <input
+              class="mr-2"
+              type="radio"
+              name="orderType"
+              value="cnc"
+              [(ngModel)]="buyOrSellModel.orderType"
+            />Normal
+          </label> -->
+            <!-- <label
+            class="radio-inline check-btn"
+            *ngIf="selectedWatchListSection == 'options'"
+          >
+            <input
+              class="mr-2"
+              type="radio"
+              name="orderType"
+              value="bo"
+              [(ngModel)]="buyOrSellModel.orderType"
+            />BO
+          </label> -->
+          </div>
+        </div>
+
+        <div
+          [ngClass]="
+            selectedWatchListSection != 'straddle'
+              ? 'sm:grid-cols-5'
+              : 'sm:grid-cols-3'
+          "
+          class="grid grid-cols-2 gap-2 m-0"
+        >
+          <div>
+            <label
+              for="quantity"
+              class="block text-xs font-medium text-gray-700"
+              >Qty</label
+            >
+            <div>
+              <input
+                type="number"
+                #inputQuantity
+                name="quantity"
+                id="quantity"
+                [ngModelOptions]="{ standalone: true }"
+                [(ngModel)]="buyOrSellModel.quantity"
+                min="1"
+                [max]="100"
+                (ngModelChange)="calTotalQty($event)"
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
+                placeholder="qty"
+              />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700">Price</label>
+            <input
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
+              name="price"
+              type="number"
+              [ngModelOptions]="{ standalone: true }"
+              [(ngModel)]="buyOrSellModel.price"
+              step="0.05"
+              [disabled]="
+                buyOrSellModel.rateType == 'market' ||
+                buyOrSellModel.rateType == 'slm'
+              "
+            />
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700"
+              >Trigger price
+            </label>
+            <input
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
+              type="number"
+              [ngModelOptions]="{ standalone: true }"
+              [(ngModel)]="buyOrSellModel.triggerPrice"
+              [disabled]="
+                buyOrSellModel.rateType == 'market' ||
+                buyOrSellModel.rateType == 'limit'
+              "
+            />
+          </div>
+          <div *ngIf="selectedWatchListSection != 'straddle'">
+            <label class="block text-xs font-medium text-gray-700"
+              >Target price</label
+            >
+            <input
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
+              type="number"
+              [ngModelOptions]="{ standalone: true }"
+              [(ngModel)]="buyOrSellModel.targetPrice"
+              [disabled]="buyOrSellModel.orderType != 'bo'"
+            />
+          </div>
+          <div *ngIf="selectedWatchListSection != 'straddle'">
+            <label class="block text-xs font-medium text-gray-700"
+              >Stop Loss</label
+            >
+            <input
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
+              type="number"
+              [ngModelOptions]="{ standalone: true }"
+              [(ngModel)]="buyOrSellModel.stopLoss"
+              [disabled]="buyOrSellModel.orderType != 'bo'"
+            />
+          </div>
+        </div>
+        <div class="grid grid-cols-3 mt-2">
+          <div class="">
+            <div class="">
+              <label class="radio-inline mx-3 check-btn">
+                Total Qty :
+                {{ totalBuyOrSellQty * selectedWatchListElement.lotSize }}
+              </label>
+            </div>
+          </div>
+          <div class="col-span-2">
+            <div class="flex">
+              <label class="radio-inline mr-3 check-btn">
+                <input
+                  class="mr-2"
+                  type="radio"
+                  name="rateType"
+                  value="market"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="buyOrSellModel.rateType"
+                  (click)="resetPriceVal(null)"
+                />Market
+              </label>
+              <label class="radio-inline mr-3 check-btn">
+                <input
+                  class="mr-2"
+                  type="radio"
+                  name="rateType"
+                  value="limit"
+                  [ngModelOptions]="{ standalone: true }"
+                  [(ngModel)]="buyOrSellModel.rateType"
+                  (click)="resetPriceVal('price')"
+                />Limit
+              </label>
+              <label class="radio-inline check-btn">
+                <input
+                  class="mr-2"
+                  type="radio"
+                  name="rateType"
+                  [value]="
+                    selectedWatchListSection == 'straddle' ? 'slm' : 'STOPLIMIT'
+                  "
+                  [(ngModel)]="buyOrSellModel.rateType"
+                  (click)="resetPriceVal('trigger-price')"
+                />
+                {{ selectedWatchListSection == "straddle" ? "SL-M" : "SL-L" }}
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-6 gap-3 mt-4 border-t border-gray-200 pt-4">
+          <div class="font-light">Basket Order</div>
+          <div>
+            <mat-slide-toggle
+              (change)="reloadBaskets()"
+              [ngModelOptions]="{ standalone: true }"
+              [(ngModel)]="buyOrSellModel.isBasket"
+              class="mr-2"
+            >
+            </mat-slide-toggle>
+          </div>
+          <div class="col-span-2" *ngIf="buyOrSellModel.isBasket">
+            <select
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500 ease-linear transition-all duration-150"
+              [ngModelOptions]="{ standalone: true }"
+              [(ngModel)]="buyOrSellModel.basketName"
+            >
+              <option *ngFor="let basket of baskets" [value]="basket.id">
+                {{ basket.name }}
+              </option>
+              <option value="new">New Basket</option>
+            </select>
+          </div>
+          <div
+            class="col-span-2"
+            *ngIf="
+              buyOrSellModel.isBasket && buyOrSellModel.basketName == 'new'
+            "
+          >
+            <input
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-gray-500 focus:ring-gray-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-50 disabled:text-gray-500"
+              type="text"
+              [ngModelOptions]="{ standalone: true }"
+              [(ngModel)]="buyOrSellModel.newBasketName"
+              [disabled]="buyOrSellModel.basketName != 'new'"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="pop-footer">
+        <div class="left-footer flex gap-2 w-full">
+          <button
+            [disabled]="loading"
+            [ngClass]="
+              loading
+                ? 'bg-gray-100 text-gray-300 cursor-not-allowed'
+                : buyOrSellModel.sell
+                ? 'bg-orange-600 hover:bg-orange-500'
+                : 'bg-blue-600 hover:bg-blue-500'
+            "
+            class="w-full py-2 text-white uppercase rounded-md"
+            type="submit"
+          >
+            {{ buyOrSellModel.sell ? "Sell" : "Buy" }}
+          </button>
+          <button
+            class="w-full py-2 ring-1 ring-gray-300 hover:ring-gray-400 hover:bg-gray-200 text-gray-500 uppercase rounded-md"
+            type="button"
+            (click)="cancel()"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="w-full flex fixed z-50 bottom-0 bg-white sm:hidden">
+  <div
+    class="ring-gray-100 py-5 text-center ring-1 grow"
+    (click)="selectedMobileMenuSection = 'watchlist'"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="w-6 h-6 mx-auto"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+      />
+    </svg>
+    <p class="text-xs mt-2 text-gray-500">Symbols/Watchlist</p>
+  </div>
+  <div
+    class="ring-gray-100 py-5 text-center ring-1 grow"
+    (click)="selectedMobileMenuSection = 'orders'"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="w-6 h-6 mx-auto"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+      />
+    </svg>
+    <p class="text-xs mt-2 text-gray-500">Orders/Positions</p>
+  </div>
+  <!-- <div class="ring-gray-100 py-5 text-center ring-1 grow">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mx-auto">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z" />
+    </svg>
+    
+  </div>
+  <div class="ring-gray-100 py-5 text-center ring-1 grow">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mx-auto">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z" />
+    </svg>
+    
+  </div>
+  <div class="ring-gray-100 py-5 text-center ring-1 grow">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mx-auto">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z" />
+    </svg>
+    
+  </div> -->
+</div>

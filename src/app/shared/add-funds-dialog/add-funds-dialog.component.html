@@ -1,0 +1,45 @@
+<form [formGroup]="valuesForm" (submit)="save()" class="p-5">
+    <h1 class="mat-dialog-title text-3xl leading-10 mb-3">{{data.type | uppercase}}</h1>
+    <div class="mat-dialog-content grid grid-cols-1  gap-y-4">
+        <div class="grid grid-cols-2">
+            <label for="amount">Amount to be added</label>
+            <input type="number" class="w-full border-gray-300 shadow-sm rounded-sm focus:border-gray-300 focus:ring-gray-300 sm:text-sm" name="amount" id="amount" formControlName="amount">
+        </div>
+        <div class="grid grid-cols-2" *ngIf="data.type=='funds'">
+            <label for="remarks">Remarks</label>
+            <textarea rows="5" class="w-full border-gray-300 shadow-sm rounded-sm focus:border-gray-300 focus:ring-gray-300 sm:text-sm" name="remarks" id="remarks" formControlName="remarks"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label for="remarks">Particular</label>
+                <select
+                formControlName="particular"
+                (change)="loadTypes($event)"
+                class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+              >
+                <option value="payin">Pay IN</option>
+                <option value="payout">Pay OUT</option>
+                <option value="limit">Limit</option>
+              </select>
+            </div>
+            <div>
+                <label for="remarks">Type</label>
+                <select
+                formControlName="type"
+                class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+              >
+                <option *ngFor="let item of types" [value]="item">{{item}}</option>
+              </select>
+            </div>
+        </div>
+        <div class="flex">
+            <p [ngClass]="errorMessage.color=='error'?'text-red-400':'text-green-400'" class="mt-2 text-sm font-medium text-gray-400" *ngIf="errorMessage.message.length>0">
+                {{errorMessage.message}}
+              </p>
+        </div>
+    </div>
+    <div class="mat-dialog-actions flex gap-4 pt-7" align="end">
+        <button class="w-full rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" type="submit">{{data.type=='payout'?'Continue':'Add'}}</button>
+        <button class="w-full  rounded-md bg-white py-2 px-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" mat-dialog-close>Close</button>
+    </div>
+</form>

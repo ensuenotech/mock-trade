@@ -1,0 +1,1279 @@
+<div class="mx-auto max-w-7xl">
+  <div class="mx-auto flex flex-col px-0">
+    <!-- <div class="top-0 z-10 flex-shrink-0 h-16 sticky flex bg-white border">
+      
+        <div class="px-4 sm:px-6 md:px-4 text-center w-100">
+          <h1
+            class="text-3xl tracking-tight mt-2 mx-auto font-bold text-gray-900 text-center w-100"
+            style="text-transform: capitalize"
+          >
+            {{ section }}
+          </h1>
+        </div>
+      </div> -->
+
+    <main class="flex-1" *ngIf="userData">
+      <div class="relative md:px-8 xl:px-0 xl:mx-4">
+        <div class="pt-0 pb-16">
+          <div class="px-4 sm:px-6 md:px-0">
+            <div class="py-0" *ngIf="section == 'profile'">
+              <div>
+                <!-- Description list with inline editing -->
+                <div
+                  class="mt-10 divide-y divide-gray-200 p-5 rounded-md bg-white"
+                >
+                  <div class="space-y-1 relative">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                      Profile
+                    </h3>
+                    <p class="max-w-2xl text-sm text-gray-500">
+                      Please fill in your information below.
+                    </p>
+                    <div
+                      [ngClass]="
+                        userData.status == 'ACTIVE'
+                          ? 'border-green-500 bg-green-100 text-green-500 '
+                          : 'border-red-500 bg-red-100 text-red-500 '
+                      "
+                      class="border-dashed absolute right-0 -top-4 font-bold rounded-md text-lg px-4 py-2 w-fit border-4 uppercase"
+                    >
+                      {{ userData.status == "ACTIVE" ? "Approved" : "Pending" }}
+                    </div>
+                  </div>
+                  <form [formGroup]="InsertUserForm" >
+                  <div class="mt-6" *ngIf="!editMode && userData">
+                    <dl class="divide-y divide-gray-200">
+                      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                        <dt class="text-sm font-medium text-gray-500">
+                          UserId
+                        </dt>
+                        <dd
+                          class="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2"
+                        >
+                          <span class="flex-grow">{{ userData.id }}</span>
+                        </dd>
+                      </div>
+                      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                        <dt class="text-sm font-medium text-gray-500">Name</dt>
+                        <dd
+                          class="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2"
+                        >
+                          <span class="flex-grow"
+                            >{{ userData.firstName }}
+                            {{ userData.lastName }}</span
+                          >
+                        </dd>
+                      </div>
+
+                      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                        <dt class="text-sm font-medium text-gray-500">
+                          Mobile
+                        </dt>
+                        <dd
+                          class="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2"
+                        >
+                          <span class="flex-grow">{{ userData.mobile }}</span>
+                        </dd>
+                      </div>
+                      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                        <dt class="text-sm font-medium text-gray-500">Email</dt>
+                        <dd
+                          class="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2"
+                        >
+                          <span class="flex-grow">{{ userData.email }}</span>
+                        </dd>
+                      </div>
+                      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                        <dt class="text-sm font-medium text-gray-500">
+                          Aadhar Number
+                        </dt>
+                        <dd
+                          class="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2"
+                        >
+                          <span class="flex-grow">{{
+                            userData.aadharNumber
+                          }}</span>
+                        </dd>
+                      </div>
+                      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                        <dt class="text-sm font-medium text-gray-500">
+                          PAN Number
+                        </dt>
+                        <dd
+                          class="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2"
+                        >
+                          <span class="flex-grow">{{
+                            userData.panNumber
+                          }}</span>
+                        </dd>
+                      </div>
+                      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                        <dt class="text-sm font-medium text-gray-500">UPI</dt>
+                        <dd
+                          class="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2"
+                        >
+                          <span class="flex-grow">{{ userData.upi }}</span>
+                        </dd>
+                      </div>
+                      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                        <dt class="text-sm font-medium text-gray-500">
+                          Address
+                        </dt>
+                        <dd
+                          class="mt-1 flex text-sm text-gray-900 sm:mt-0 sm:col-span-2"
+                        >
+                          <span class="flex-grow" *ngIf="userData.address"
+                            >{{ userData.address.address }},
+                            {{ userData.address.city }},
+                            {{ userData.address.state }},
+                            {{ userData.address.country }}-{{
+                              userData.address.pinCode
+                            }}</span
+                          >
+                        </dd>
+                      </div>
+                      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-9  sm:gap-4">
+                        <dt class="text-sm font-medium text-gray-500 col-span-3">
+                         Target
+                        </dt>
+                        <dd
+                          class="mt-1 flex text-sm text-gray-900 sm:mt-0  sm:text-right text-left"
+                        >
+                          <span class="flex-grow py-3">Profit</span>
+                         
+                        </dd>
+                        <dd
+                          class="mt-1 flex text-sm text-gray-900 sm:mt-0 "
+                        >
+                        <input
+                        type="number"
+                        max="100"
+                        min="0"
+                        name="profit"
+                      (keyup)="checkTargetQuantities()"
+                      class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                        placeholder="Profit"
+                        formControlName="profit"
+                      />
+                        </dd>
+                        <dd
+                        class="mt-1 flex text-sm sm:text-right text-left  text-gray-900 sm:mt-0 "
+                      >
+                        <span class="flex-grow py-3">S L</span>
+                       
+                      </dd>
+                      <dd
+                        class="mt-1 flex text-sm text-gray-900 sm:mt-0 "
+                      >
+                      <input
+                      type="number"
+                      min="-20"
+                      max="0"
+                      name="sl"
+                      (keyup)="checkTargetQuantities()"
+                      class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      placeholder="S L"
+                      formControlName="sl"
+                    />
+                      </dd>
+                      <dd class="col-span-2 mt-4 sm:mt-0 ">
+                        <button
+                        *ngIf="userData.status == 'ACTIVE'"
+                        (click)="updateTarget()"
+                        class="bg-indigo-500  w-full text-white border rounded p-2"
+                      >
+                        Update Target
+                      </button>
+                      </dd>
+                      </div>
+                      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-9  sm:gap-4">
+                        <dt class="text-sm font-medium text-gray-500 col-span-3">
+                         
+                        </dt>
+                        <dd
+                          class="mt-1 flex text-sm text-gray-900 sm:mt-0  sm:text-right text-left"
+                        >
+                          <span class="flex-grow py-3">Trail After</span>
+                         
+                        </dd>
+                        <dd
+                          class="mt-1 flex text-sm text-gray-900 sm:mt-0 "
+                        >
+                        <input
+                        type="number"
+                        max="100"
+                        min="0"
+                        name="trailAfter"
+                      (keyup)="checkTrail()"
+                      class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                        placeholder="Trail After"
+                        formControlName="trailAfter"
+                      />
+                        </dd>
+                        <dd
+                        class="mt-1 flex text-sm sm:text-right text-left  text-gray-900 sm:mt-0 "
+                      >
+                        <span class="flex-grow py-3">Trail By</span>
+                       
+                      </dd>
+                      <dd
+                        class="mt-1 flex text-sm text-gray-900 sm:mt-0 "
+                      >
+                      <select name="trailBy" id="trailBy" formControlName="trailBy"
+                      class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+                        <option value="0.5">0.5%</option>
+                        <option value="1">1%</option>
+                      </select>
+                     
+                      </dd>
+                      <dd class="col-span-2 mt-4 sm:mt-0 ">
+                        <button
+                        *ngIf="userData.status == 'ACTIVE'"
+                        (click)="updateTrail()"
+                        class="bg-indigo-500  w-full text-white border rounded p-2"
+                      >
+                        Update Trail
+                      </button>
+                      </dd>
+                      </div>
+                      <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                        <button
+                          *ngIf="userData.status != 'ACTIVE'"
+                          (click)="loadUserDetails()"
+                          class="bg-indigo-500 lg:w-1/2 w-full text-white border rounded p-2"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    </dl>
+                  </div>
+               
+                    <div class="flex mt-10" *ngIf="editMode">
+                      <div class="flex-1 align-middle lg:w-6/12 pt-0">
+                        <div class="relative w-full mb-3">
+                          <label
+                            class="block uppercase text-left text-gray-600 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                          >
+                            First Name
+                          </label>
+                          <input
+                            type="text"
+                            name="firstName"
+                            class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                            placeholder="First Name"
+                            formControlName="firstName"
+                          />
+                        </div>
+                        <div class="relative w-full mb-3">
+                          <label
+                            class="block uppercase text-left text-gray-600 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                          >
+                            Last Name
+                          </label>
+                          <input
+                            type="text"
+                            class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                            placeholder="Last Name"
+                            formControlName="lastName"
+                          />
+                        </div>
+
+                        <div class="relative w-full mb-3">
+                          <label
+                            class="block uppercase text-left text-gray-600 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                          >
+                            Email
+                          </label>
+                          <input
+                            type="email"
+                            class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                            placeholder="Email"
+                            formControlName="email"
+                          />
+                        </div>
+                        <div class="relative w-full mb-3">
+                          <label
+                            class="block uppercase text-left text-gray-600 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                          >
+                            Mobile
+                          </label>
+                          <input
+                            type="tel"
+                            readonly="true"
+                            class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                            placeholder="Mobile"
+                            formControlName="mobile"
+                          />
+                        </div>
+                        <div class="relative w-full mb-3">
+                          <label
+                            class="block uppercase text-left text-gray-600 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                          >
+                            Address
+                          </label>
+                          <textarea
+                            class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                            placeholder="Address"
+                            formControlName="address"
+                          ></textarea>
+                        </div>
+                        <div class="relative w-full mb-3">
+                          <label
+                            class="block uppercase text-left text-gray-600 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                          >
+                            Country
+                          </label>
+                          <select
+                            formControlName="country"
+                            class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          >
+                            <option
+                              *ngFor="let item of countries"
+                              [value]="item.id"
+                            >
+                              {{ item.name }}
+                            </option>
+                          </select>
+                        </div>
+                        <div class="relative w-full mb-3">
+                          <label
+                            class="block uppercase text-left text-gray-600 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                          >
+                            State
+                          </label>
+                          <select
+                            formControlName="state"
+                            class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                          >
+                            <option
+                              *ngFor="let stateName of allStateNames"
+                              [value]="stateName.id"
+                            >
+                              {{ stateName.name }}
+                            </option>
+                          </select>
+                        </div>
+                        <div class="relative w-full mb-3">
+                          <label
+                            class="block uppercase text-left text-gray-600 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                          >
+                            City
+                          </label>
+                          <input
+                            type="text"
+                            class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                            placeholder="City"
+                            formControlName="city"
+                          />
+                        </div>
+                      </div>
+                      <div class="flex-1 px-4 align-middle lg:w-6/12 pt-0">
+                        <div class="relative w-full mb-3">
+                          <label
+                            class="block uppercase text-left text-gray-600 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                          >
+                            Aadhar Number
+                          </label>
+                          <input
+                            type="text"
+                            class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                            placeholder="Aadhar Number"
+                            formControlName="aadharNumber"
+                          />
+                        </div>
+                        <div class="relative w-full mb-3">
+                          <label
+                            class="block uppercase text-left text-gray-600 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                          >
+                            PAN Number
+                          </label>
+                          <input
+                            type="text"
+                            class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                            placeholder="PAN Number"
+                            formControlName="panNumber"
+                          />
+                        </div>
+                        <div class="relative w-full mb-3">
+                          <label
+                            class="block uppercase text-left text-gray-600 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                          >
+                            UPI
+                          </label>
+                          <input
+                            type="text"
+                            class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                            placeholder="UPI"
+                            formControlName="upi"
+                          />
+                        </div>
+                        <div class="relative w-full mb-3">
+                          <label
+                            class="block uppercase text-left text-gray-600 text-xs font-bold mb-2"
+                            htmlFor="grid-password"
+                          >
+                            Bank Account
+                          </label>
+                          <input
+                            type="text"
+                            class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                            placeholder="bankAccount"
+                            formControlName="bankAccount"
+                          />
+                        </div>
+                        <div
+                          class="sm:grid sm:grid-cols-3 sm:items-center sm:gap-4 sm:pt-5"
+                        >
+                          <label
+                            for="photo"
+                            class="block text-sm font-medium text-gray-700"
+                            >Aadhar</label
+                          >
+                          <div class="mt-1 sm:col-span-2 sm:mt-0">
+                            <div class="flex items-center">
+                              <span
+                                class="h-auto w-48 overflow-hidden bg-gray-100"
+                              >
+                                <img
+                                  class="h-full w-full text-gray-300"
+                                  [src]="aadhar"
+                                />
+                              </span>
+                              <input
+                                type="file"
+                                #uploaderAadhar
+                                placeholder="Choose file"
+                                (change)="
+                                  uploadFile(uploaderAadhar.files, 'aadhar')
+                                "
+                                style="display: none"
+                              />
+                              <button
+                                (click)="uploaderAadhar.click()"
+                                type="button"
+                                class="ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                              >
+                                Change / Upload
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="sm:grid sm:grid-cols-3 sm:items-center sm:gap-4 sm:pt-5"
+                        >
+                          <label
+                            for="photo"
+                            class="block text-sm font-medium text-gray-700"
+                            >Cancelled Cheque</label
+                          >
+                          <div class="mt-1 sm:col-span-2 sm:mt-0">
+                            <div class="flex items-center">
+                              <span
+                                class="h-auto w-48 overflow-hidden bg-gray-100"
+                              >
+                                <img
+                                  class="h-full w-full text-gray-300"
+                                  [src]="cheque"
+                                />
+                              </span>
+                              <input
+                                type="file"
+                                #uploaderCheque
+                                placeholder="Choose file"
+                                (change)="
+                                  uploadFile(uploaderCheque.files, 'cheque')
+                                "
+                                style="display: none"
+                              />
+                              <button
+                                (click)="uploaderCheque.click()"
+                                type="button"
+                                class="ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                              >
+                                Change / Upload
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="sm:grid sm:grid-cols-3 sm:items-center sm:gap-4 sm:pt-5"
+                        >
+                          <label
+                            for="photo"
+                            class="block text-sm font-medium text-gray-700"
+                            >Pan Card</label
+                          >
+                          <div class="mt-1 sm:col-span-2 sm:mt-0">
+                            <div class="flex items-center">
+                              <span
+                                class="h-auto w-48 overflow-hidden bg-gray-100"
+                              >
+                                <img
+                                  class="h-full w-full text-gray-300"
+                                  [src]="pan"
+                                />
+                              </span>
+                              <input
+                                type="file"
+                                #uploaderPan
+                                placeholder="Choose file"
+                                (change)="uploadFile(uploaderPan.files, 'pan')"
+                                style="display: none"
+                              />
+                              <button
+                                (click)="uploaderPan.click()"
+                                type="button"
+                                class="ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                              >
+                                Change / Upload
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mt-6 flex flex-wrap md:flex-nowrap" *ngIf="editMode">
+                      <button
+                        *ngIf="userData.status != 'approved'"
+                        class="bg-indigo-500 text-white active:bg-indigo-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                        type="button"
+                        (click)="saveDetails()"
+                      >
+                        Save Details</button
+                      ><button
+                        class="bg-transparent border border-indigo-500 text-indigo-500 active:bg-indigo-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                        type="button"
+                        (click)="editMode = false"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="" *ngIf="section == 'reports'">
+              <div class="mt-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 justify-between">
+                  <div *ngIf="reportsSection == 'trade-history'">
+                    <input
+                      [(ngModel)]="selectedDate"
+                      type="date"
+                      class="ml-auto block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
+                      (change)="changeDate($event)"
+                    />
+                  </div>
+
+                  <div class="flex" *ngIf="reportsSection == 'pandl'">
+                    <form [formGroup]="pandlForm" class="ml-auto w-full">
+                      <div class="grid grid-cols-4 sm:gap-2 gap-0">
+                        <div class="sm:text-right text-center">
+                          <label
+                            for="fromDate"
+                            class="block font-medium text-xs sm:text-sm mt-2"
+                            >From Date</label
+                          >
+                        </div>
+                        <div>
+                          <input
+                            id="fromDate"
+                            formControlName="selectedPandLFromDate"
+                            type="date"
+                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
+                            (change)="changePandLDate()"
+                          />
+                        </div>
+                        <div class="sm:text-right text-center">
+                          <label
+                            for="toDate"
+                            class="block font-medium text-xs sm:text-sm mt-2"
+                            >To Date</label
+                          >
+                        </div>
+
+                        <div>
+                          <input
+                            formControlName="selectedPandLToDate"
+                            id="toDate"
+                            type="date"
+                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
+                            (change)="changePandLDate()"
+                          />
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+
+                  <div
+                    *ngIf="reportsSection == 'ledger'"
+                    class="grid grid-cols-1 text-right sm:text-left sm:grid-cols-3 gap-4 text-lg"
+                  >
+                    <div class="text-green-500">
+                      Credits:
+                      <span class="font-bold">
+                        ₹{{ credits | number : "1.1-2" }}</span
+                      >
+                    </div>
+                    <div class="text-red-500">
+                      Debits:
+                      <span class="font-bold"
+                        >₹{{ debits | number : "1.1-2" }}</span
+                      >
+                    </div>
+                    <div class="text-gray-500">
+                      Balance:
+                      <span class="font-bold"
+                        >₹{{ credits + debits | number : "1.1-2" }}</span
+                      >
+                    </div>
+                  </div>
+                  <div
+                    *ngIf="reportsSection == 'funds'"
+                    class="grid grid-cols-1 text-right sm:text-left sm:grid-cols-3 gap-4 text-lg"
+                  >
+                    <div class="text-green-500">
+                      Credits:
+                      <span class="font-bold">
+                        ₹{{ credits | number : "1.1-2" }}</span
+                      >
+                    </div>
+                    <div class="text-red-500">
+                      Debits:
+                      <span class="font-bold"
+                        >₹{{ debits | number : "1.1-2" }}</span
+                      >
+                    </div>
+                    <div class="text-gray-500">
+                      Balance:
+                      <span class="font-bold"
+                        >₹{{ credits + debits | number : "1.1-2" }}</span
+                      >
+                    </div>
+                  </div>
+                  <div class="order-first mb-3">
+                    <select
+                      class="block mr-auto w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
+                      (change)="chooseSection($event)"
+                    >
+                      <option value="trade-history">Trade History</option>
+                      <option value="pandl">P&L Reports</option>
+                      <option value="ledger">Ledger</option>
+                      <option value="funds">Funds</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <section
+                aria-labelledby="billing-history-heading"
+                class="mt-4"
+                *ngIf="reportsSection == 'trade-history'"
+              >
+                <div
+                  class="bg-white pt-6 shadow sm:rounded-md sm:overflow-hidden"
+                >
+                  <div class="px-4 sm:px-6">
+                    <h2
+                      id="billing-history-heading"
+                      class="text-lg leading-6 font-medium text-gray-900"
+                    >
+                      Trades
+                    </h2>
+                  </div>
+                  <div class="mt-6 flex flex-col">
+                    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                      <div
+                        class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8"
+                      >
+                        <div class="overflow-hidden border-t border-gray-200">
+                          <table class="min-w-full divide-y divide-gray-300">
+                            <thead class="bg-gray-50">
+                              <tr>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Time
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Type
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Symbol
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Product
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Qty
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Price
+                                </th>
+                             
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Status
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 bg-white">
+                              <tr *ngFor="let item of trades; let i = index">
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                >
+                                  {{ item.time | date : "shortTime" }}
+                                </td>
+
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                >
+                                  <span
+                                    class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-medium text-gray-800 uppercase"
+                                    [ngClass]="
+                                      item.operationType == 'buy'
+                                        ? 'bg-blue-300'
+                                        : 'bg-orange-300'
+                                    "
+                                    >{{ item.operationType | titlecase }}</span
+                                  >
+                                </td>
+
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-left"
+                                >
+                                  {{ item.alias }}
+                                  <small class="text-uppercase">{{
+                                    item.expiry | date : "dd MMM"
+                                  }}</small>
+                                </td>
+
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                >
+                                  {{ item.orderType | uppercase }}
+                                </td>
+
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                >
+                                  {{ item.quantity }}
+                                </td>
+
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                >
+                                  {{ item.price }}
+                                </td>
+                                
+
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                >
+                                  <span
+                                    class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-semibold text-gray-800 capitalize"
+                                    [ngClass]="
+                                      item.status == 'executed'
+                                        ? 'text-green-500'
+                                        : item.status == 'rejected'
+                                        ? 'text-red-600'
+                                        : 'text-gray-400'
+                                    "
+                                    >{{ item.status }}</span
+                                  >
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section
+                aria-labelledby="billing-history-heading"
+                class="mt-4"
+                *ngIf="reportsSection == 'pandl'"
+              >
+                <div
+                  class="bg-white pt-6 shadow sm:rounded-md sm:overflow-hidden"
+                >
+                  <div class="px-4 sm:px-6">
+                    <h2
+                      id="billing-history-heading"
+                      class="text-lg leading-6 font-medium text-gray-900"
+                    >
+                      P and L Reports
+                    </h2>
+                  </div>
+                  <div class="mt-6 flex flex-col">
+                    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                      <div
+                        class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8"
+                      >
+                        <div class="overflow-hidden border-t border-gray-200">
+                          <table class="min-w-full divide-y divide-gray-300">
+                            <thead class="bg-gray-50">
+                              <tr>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Date
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Symbol
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Buy Qty
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Buy Price
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Buy Value
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Sell Qty
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Sell Price
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Sell Value
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Platform Cost
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Trade Expense
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  net P&L
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 bg-white">
+                              <tr *ngFor="let item of positions; let i = index">
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                >
+                                  {{ item.updatedOn | date : "longDate" }}
+                                </td>
+
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                >
+                                  {{ item.symbol }}
+                                </td>
+
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-left"
+                                >
+                                  {{ item.buyQuantity }}
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-right"
+                                >
+                                  {{ item.buyAvg | number : "1.2-2" }}
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-right"
+                                >
+                                  {{
+                                    item.buyAvg * item.buyQuantity
+                                      | number : "1.2-2"
+                                  }}
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-left"
+                                >
+                                  {{ item.sellQuantity }}
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-right"
+                                >
+                                  {{ item.sellAvg | number : "1.2-2" }}
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-right"
+                                >
+                                  {{
+                                    item.sellAvg * item.sellQuantity
+                                      | number : "1.2-2"
+                                  }}
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-right"
+                                >
+                                  {{ item.brokerage | number : "1.2-2" }}
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-right"
+                                >
+                                  {{ item.expense | number : "1.2-2" }}
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-right"
+                                >
+                                  {{ item.pandL | number : "1.2-2" }}
+                                </td>
+                              </tr>
+                              <tr>
+                                <td
+                                  colspan="10"
+                                  class="whitespace-nowrap text-right px-3 py-4 text-sm text-gray-500"
+                                >
+                                  Total
+                                </td>
+                                <td
+                                  class="whitespace-nowrap font-semibold text-lg px-3 py-4 text-gray-500 text-right"
+                                >
+                                  {{ getpnlsum() | number : "1.2-2" }}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section
+                aria-labelledby="billing-history-heading"
+                class="mt-4"
+                *ngIf="reportsSection == 'ledger'"
+              >
+                <div
+                  class="bg-white pt-6 shadow sm:rounded-md sm:overflow-hidden"
+                >
+                  <div class="px-4 sm:px-6">
+                    <h2
+                      id="billing-history-heading"
+                      class="text-lg leading-6 font-medium text-gray-900"
+                    >
+                      Ledger
+                    </h2>
+                  </div>
+                  <div class="mt-6 flex flex-col">
+                    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                      <div
+                        class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8"
+                      >
+                        <div class="overflow-hidden border-t border-gray-200">
+                          <table class="min-w-full divide-y divide-gray-300">
+                            <thead class="bg-gray-50">
+                              <tr>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                  data-sort="desc"
+                                  (click)="handleSort('createdOn', $event)"
+                                >
+                                  Date <i class="fa fa-caret-up"></i>
+                                </th>
+                                <th
+                                scope="col"
+                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                              >
+                                Particular
+                              </th>
+                              <th
+                                scope="col"
+                                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                              >
+                                Type
+                              </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Remarks
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                 
+                                >
+                                  Credit
+                                </th>
+
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                  
+                                >
+                                  Debit 
+                                </th>
+                                <th
+                                  scope="col"
+                                  class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                >
+                                  Balance
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 bg-white">
+                              <tr *ngFor="let item of ledger; let i = index">
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                >
+                                  {{ item.createdOn | date : "dd MMM YYYY" }}
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                >
+                                  {{ item.particular }}
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                >
+                                  {{ item.type }}
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-left"
+                                >
+                                  {{ item.remarks }}
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                >
+                                  <span *ngIf="item.amount > 0"
+                                    >₹{{ item.amount | number : "1.1-2" }}</span
+                                  >
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                >
+                                  <span *ngIf="item.amount < 0"
+                                    >₹{{
+                                      -1 * item.amount | number : "1.1-2"
+                                    }}</span
+                                  >
+                                </td>
+                                <td
+                                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                >
+                                  <span
+                                    >₹{{
+                                      getBalance(i) | number : "1.1-2"
+                                    }}</span
+                                  >
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section
+                aria-labelledby="billing-history-heading"
+                class="mt-4"
+                *ngIf="reportsSection == 'funds'"
+              >
+                <div
+                  class="bg-white pt-2 shadow sm:rounded-md sm:overflow-hidden"
+                >
+                  <mat-tab-group>
+                    <mat-tab label="Pay In">
+                      <div class="bg-white w-full p-5">
+                        <p class="title font-bold text-xl text-gray-500">
+                          Pay via NEFT IMPS
+                        </p>
+                        <p class="text-md text-gray-800">
+                          Infinity Financial Inclusion
+                        </p>
+                        <p class="text-md text-gray-800">
+                          Bank Name: DBS Bank India Limited
+                        </p>
+                        <p class="text-md text-gray-800">
+                          Current A/C: 8831210000000602
+                        </p>
+                        <p class="text-md text-gray-800">IFSC: DBSS0IN0831</p>
+                      </div>
+                      <div class="bg-white w-full p-5 mt-3">
+                        <p class="title font-bold text-xl text-gray-500">UPI</p>
+                        <p class="text-md text-gray-800">straddly&#64;upi</p>
+                      </div>
+                    </mat-tab>
+                    <mat-tab label="Pay Out">
+                      <div class="bg-white w-full p-5 h-fit">
+                        <div class="grid sm:grid-cols-2 grid-cols-1 p-5 gap-4">
+                          <div class="ring-1 ring-gray-100 p-5">
+                            <div class="overflow-hidden border-t border-gray-200">
+                              <table class="min-w-full divide-y divide-gray-300 border">
+                                <thead class="bg-gray-50">
+                                  <tr>
+                                    <th
+                                      scope="col"
+                                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                    >
+                                      Date/Time
+                                    </th>
+                                    <th
+                                      scope="col"
+                                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                    >
+                                      Amount
+                                    </th>
+                                   
+                                   
+                                    <th
+                                      scope="col"
+                                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                    >
+                                      Status
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 bg-white">
+                                  <tr *ngFor="let item of payouts; let i = index">
+                                    <td
+                                      class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                    >
+                                      {{ item.date | date : "medium" }}
+                                    </td> <td
+                                      class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                    >
+                                      {{ item.amount | number:'1.1-2' }}
+                                    </td> 
+                                  
+                                    <td
+                                      class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                    >
+                                      <span
+                                        class="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-semibold text-gray-800 capitalize"
+                                        [ngClass]="
+                                          item.status == 'resolved'
+                                            ? 'text-green-500'
+                                            : item.status == 'rejected'
+                                            ? 'text-red-600'
+                                            : 'text-gray-400'
+                                        "
+                                        >{{ item.status }}</span
+                                      >
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <div class="ring-1 ring-gray-100 p-5">
+                            <form [formGroup]="payoutForm">
+                              <div
+                                class="mat-dialog-content grid grid-cols-1 gap-y-4"
+                              >
+                                <div class="grid grid-cols-2">
+                                  <label for="amount">Amount</label>
+                                  <input
+                                    type="number"
+                                    class="w-full border-gray-300 shadow-sm rounded-sm focus:border-gray-300 focus:ring-gray-300 sm:text-sm"
+                                    name="amount"
+                                    id="amount"
+                                    formControlName="amount"
+                                  />
+                                </div>
+                                <!-- <div class="grid grid-cols-2">
+                                  <label for="remarks">Remarks</label>
+                                  <textarea
+                                    rows="5"
+                                    class="w-full border-gray-300 shadow-sm rounded-sm focus:border-gray-300 focus:ring-gray-300 sm:text-sm"
+                                    name="remarks"
+                                    id="remarks"
+                                    formControlName="remarks"
+                                  ></textarea>
+                                </div> -->
+                              </div>
+                              <div
+                                class="mat-dialog-actions flex gap-4 pt-7"
+                                align="end"
+                              >
+                                <button
+                                  class="w-fit ml-auto rounded-md bg-indigo-600 py-2 px-5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                  (click)="savepayout()"
+                                >
+                                  Place request
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </mat-tab>
+                  </mat-tab-group>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
