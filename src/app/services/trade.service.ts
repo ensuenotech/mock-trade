@@ -41,15 +41,17 @@ export class TradeService {
     return this.http.post(this.API_URL + `/api/user/getTrades`, id, httpOptions);
   }
 
-  allTrades(date:Date, id:any){
-    if(id==undefined)id=null
-    return this.http.post(this.API_URL + `/api/user/getAllTrades`, JSON.stringify({userId:id, date:date}), httpOptions);
+  allTrades(id:any){
+    return this.http.post(this.API_URL + `/api/user/getAllTrades`, JSON.stringify(id), httpOptions);
   }
   getOrderdetails(id:any){
     return this.http.post(this.API_URL + `/api/trade/order`, JSON.stringify(id), httpOptions);
   }
-  getPositions(userId:number, fromDate:Date, toDate:Date){
-    return this.http.post(this.API_URL + `/api/user/getPositions`,JSON.stringify({userId:userId, fromDate:fromDate, toDate:toDate}), httpOptions);
+  // getPositions(userId:number, fromDate:Date, toDate:Date){
+  //   return this.http.post(this.API_URL + `/api/user/getPositions`,JSON.stringify({userId:userId, fromDate:fromDate, toDate:toDate}), httpOptions);
+  // }
+  getPositions(userId:number){
+    return this.http.post(this.API_URL + `/api/user/getPositions`,JSON.stringify(userId), httpOptions);
   }
 
   savePositionData(data:any){

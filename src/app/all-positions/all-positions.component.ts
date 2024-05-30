@@ -663,7 +663,7 @@ export class AllPositionsComponent {
   }
 
   getOrderList() {
-    this.tradeService.allTrades(this.selectedDate, undefined).subscribe(
+    this.tradeService.allTrades( undefined).subscribe(
       (data: any) => {
         let symbols: any[] = [];
         data = data.filter((d: any) => d.status == 'executed');

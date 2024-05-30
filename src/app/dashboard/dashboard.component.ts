@@ -149,7 +149,7 @@ export class DashboardComponent implements OnInit {
       }
     });
     this.userId = this.authService.getUserId();
-    this.getPayouts();
+    // this.getPayouts();
 
     this.userService.getProfile(this.userId).subscribe((res: any) => {
       this.userData = res;
@@ -344,12 +344,16 @@ export class DashboardComponent implements OnInit {
     } else if (selection == 'pandl') {
       this.tradeService
         .getPositions(
-          this.userId,
-          this.pandlForm.controls['selectedPandLFromDate'].value,
-          this.pandlForm.controls['selectedPandLToDate'].value
+          this.userId
+         
         )
         .subscribe((res: any) => {
-          this.positions = res;
+          this.positions = res.filter((x:any)=>{
+             moment(x.updatedOn).date()>=moment( this.pandlForm.controls['selectedPandLFromDate'].value).date()
+             && 
+             moment(x.updatedOn).date()<=moment( this.pandlForm.controls['selectedPandLToDate'].value).date()
+          
+          });
         });
     } else if (selection == 'ledger' || selection == 'funds') {
       this.userService.getLedger(this.userId).subscribe((res: any) => {
@@ -369,7 +373,7 @@ export class DashboardComponent implements OnInit {
     return _.sum(this.ledger.slice(0, index + 1).map((x: any) => x.amount));
   }
   getOrderList(date: any) {
-    this.tradeService.allTrades(date, this.userId).subscribe((data: any) => {
+    this.tradeService.allTrades(this.userId).subscribe((data: any) => {
       let symbols: any[] = [];
       data.forEach((v: any) => {
         if (!symbols.some((s) => s == v.symbol)) symbols.push(v.symbol);
@@ -395,7 +399,8 @@ export class DashboardComponent implements OnInit {
           );
         });
       }
-      this.trades = data.filter((order: any) => {
+      let _trades = data.filter((x: any) => moment(x.time).date() == moment(date).date())
+      this.trades = _trades.filter((order: any) => {
         if (order.strategy == 'straddle') {
           order.alias = `${
             this.stockList.find((s: any) => s.displayName == order.symbol)?.name
@@ -421,9 +426,7 @@ export class DashboardComponent implements OnInit {
   changePandLDate() {
     this.tradeService
       .getPositions(
-        this.userId,
-        this.pandlForm.controls['selectedPandLFromDate'].value,
-        this.pandlForm.controls['selectedPandLToDate'].value
+        this.userId
       )
       .subscribe((res: any) => {
         this.positions = res;
