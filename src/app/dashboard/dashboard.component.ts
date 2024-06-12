@@ -167,7 +167,9 @@ export class DashboardComponent implements OnInit {
         this.InsertUserForm.controls['profit'].setValue(r.target?.profit);
         this.InsertUserForm.controls['sl'].setValue(r.target?.sl);
         this.InsertUserForm.controls['trailBy'].setValue(r.trail?.trailBy);
-        this.InsertUserForm.controls['trailAfter'].setValue(r.trail?.trailAfter);
+        this.InsertUserForm.controls['trailAfter'].setValue(
+          r.trail?.trailAfter
+        );
       });
     } else {
       this.payments = this.userDetails?.userPayments;
@@ -342,19 +344,7 @@ export class DashboardComponent implements OnInit {
     if (selection == 'trade-history') {
       this.getOrderList(this.selectedDate);
     } else if (selection == 'pandl') {
-      this.tradeService
-        .getPositions(
-          this.userId
-         
-        )
-        .subscribe((res: any) => {
-          this.positions = res.filter((x:any)=>{
-             moment(x.updatedOn).date()>=moment( this.pandlForm.controls['selectedPandLFromDate'].value).date()
-             && 
-             moment(x.updatedOn).date()<=moment( this.pandlForm.controls['selectedPandLToDate'].value).date()
-          
-          });
-        });
+      this.changePandLDate();
     } else if (selection == 'ledger' || selection == 'funds') {
       this.userService.getLedger(this.userId).subscribe((res: any) => {
         this.ledger = res;
@@ -373,7 +363,7 @@ export class DashboardComponent implements OnInit {
     return _.sum(this.ledger.slice(0, index + 1).map((x: any) => x.amount));
   }
   getOrderList(date: any) {
-    this.tradeService.allTrades(this.userId).subscribe((data: any) => {
+    this.tradeService.allTradesByDate(date).subscribe((data: any) => {
       let symbols: any[] = [];
       data.forEach((v: any) => {
         if (!symbols.some((s) => s == v.symbol)) symbols.push(v.symbol);
@@ -397,25 +387,32 @@ export class DashboardComponent implements OnInit {
               JSON.stringify(this.tradeService.allStockList)
             )
           );
+          this.refreshTradesList(data, date);
         });
+      } else {
+        this.refreshTradesList(data, date);
       }
-      let _trades = data.filter((x: any) => moment(x.time).date() == moment(date).date())
-      this.trades = _trades.filter((order: any) => {
-        if (order.strategy == 'straddle') {
-          order.alias = `${
-            this.stockList.find((s: any) => s.displayName == order.symbol)?.name
-          } ${moment(order.expiry).format('MMM').toUpperCase()} ${
-            order.strike
-          } SD`;
-        } else
-          order.alias = `${
-            this.tradeService.allStockList.find(
-              (s: any) => s.symbol == order.symbol
-            )?.alias
-          }`;
+    });
+  }
+  refreshTradesList(data: any, date: any) {
+    let _trades = data.filter(
+      (x: any) => moment(x.time).date() == moment(date).date()
+    );
+    this.trades = _trades.filter((order: any) => {
+      if (order.strategy == 'straddle') {
+        order.alias = `${
+          this.stockList.find((s: any) => s.displayName == order.symbol)?.name
+        } ${moment(order.expiry).format('MMM').toUpperCase()} ${
+          order.strike
+        } SD`;
+      } else
+        order.alias = `${
+          this.tradeService.allStockList.find(
+            (s: any) => s.symbol == order.symbol
+          )?.alias
+        }`;
 
-        return order;
-      });
+      return order;
     });
   }
   changeDate(event: any) {
@@ -424,13 +421,24 @@ export class DashboardComponent implements OnInit {
     this.getOrderList(date);
   }
   changePandLDate() {
-    this.tradeService
-      .getPositions(
-        this.userId
-      )
-      .subscribe((res: any) => {
-        this.positions = res;
+    this.tradeService.getPositions(this.userId).subscribe((res: any) => {
+      this.positions = res.filter((x: any) => {
+        const updatedOnDate = moment(x.updatedOn, 'YYYY-MM-DD').toDate();
+        const fromDate = moment(
+          this.pandlForm.controls['selectedPandLFromDate'].value,
+          'YYYY-MM-DD'
+        ).toDate();
+        const toDate = moment(
+          this.pandlForm.controls['selectedPandLToDate'].value,
+          'YYYY-MM-DD'
+        ).toDate();
+
+
+        return updatedOnDate >= fromDate && updatedOnDate <= toDate;
       });
+
+      
+    });
   }
   getpnlsum() {
     return _.sum(

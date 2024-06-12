@@ -44,6 +44,9 @@ export class TradeService {
   allTrades(id:any){
     return this.http.post(this.API_URL + `/api/user/getAllTrades`, JSON.stringify(id), httpOptions);
   }
+  allTradesByDate(date:any){
+    return this.http.post(this.API_URL + `/api/user/getAllTradesByDate`, JSON.stringify(date), httpOptions);
+  }
   getOrderdetails(id:any){
     return this.http.post(this.API_URL + `/api/trade/order`, JSON.stringify(id), httpOptions);
   }
@@ -52,6 +55,9 @@ export class TradeService {
   // }
   getPositions(userId:number){
     return this.http.post(this.API_URL + `/api/user/getPositions`,JSON.stringify(userId), httpOptions);
+  }
+  getPositionsByDate(date:any){
+    return this.http.post(this.API_URL + `/api/user/getPositionsByDate`,JSON.stringify(date), httpOptions);
   }
 
   savePositionData(data:any){

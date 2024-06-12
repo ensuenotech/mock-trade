@@ -957,7 +957,6 @@ export class TradeComponent implements OnInit {
     }
   }
   buyOrSellStockPopUp(item: any, type: any) {
-    console.log(item);
     this.showSearchList = false;
     this.searchControl.reset();
     this.buyOrSellModel = new buyAndSellStock();
@@ -1359,6 +1358,7 @@ export class TradeComponent implements OnInit {
   _buyOrSellStock() {
     if (this.buyOrSellModel.isBasket ?? false) {
       if (this.buyOrSellModel.basketName == 'new') {
+        console.log('new basket name', this.buyOrSellModel.newBasketName);
         if (this.buyOrSellModel.newBasketName)
           this.tradeService
             .createBasket(this.buyOrSellModel.newBasketName)
@@ -5447,11 +5447,89 @@ export class TradeComponent implements OnInit {
       .getbaskets(this.authService.getUserId())
       .subscribe((res: any) => {
         this.baskets = res;
+        let newSymbols: any = [];
+        this.baskets.forEach((basket: any) => {
+          basket.orders.forEach((order: any) => {
+            if (
+              !this.tradeService.allStockList.some(
+                (st) => st.symbol == order.symbol
+              )
+            ) {
+              newSymbols.push(order.symbol);
+            }
+          });
+        });
+        
+
+        
+        if (newSymbols.length > 0) {
+          this.strikeService
+            .getSymbolsDetails(newSymbols)
+            .subscribe((res: any) => {
+              res.forEach((element: any) => {
+                if (
+                  this.tradeService.allStockList.find((s) => s == element) ==
+                  undefined
+                )
+                  this.tradeService.allStockList.push(element);
+              });
+              localStorage.setItem(
+                'allStockList',
+                this.encService.encrypt(
+                  JSON.stringify(this.tradeService.allStockList)
+                )
+              );
+              this.baskets.forEach((basket: any) => {
+                basket.orders.forEach((v: any, index: number) => {
+                  let symbolVal: any = this.tradeService.allStockList.find(
+                    (s: any) => s.symbol == v.symbol
+                  );
+      
+                  if (symbolVal != undefined) {
+                    v.symbolId = symbolVal.symbolId;
+                    v.alias = symbolVal.alias;
+                  }
+                  if (v.strategy == 'straddle') {
+                    v.alias = `${
+                      this.stockList.find((s: any) => s.displayName == v.symbol).name
+                    } ${moment(v.expiry).format('MMM').toUpperCase()} ${v.strike} SD`;
+                  }
+                });
+                // basket.orders = basket.orders.filter(
+                //   (bo: any) => bo.symbolId != undefined
+                // );
+              });
+            });
+        }
+        else{
+          this.baskets.forEach((basket: any) => {
+            basket.orders.forEach((v: any, index: number) => {
+              let symbolVal: any = this.tradeService.allStockList.find(
+                (s: any) => s.symbol == v.symbol
+              );
+  
+              if (symbolVal != undefined) {
+                v.symbolId = symbolVal.symbolId;
+                v.alias = symbolVal.alias;
+              }
+              if (v.strategy == 'straddle') {
+                v.alias = `${
+                  this.stockList.find((s: any) => s.displayName == v.symbol).name
+                } ${moment(v.expiry).format('MMM').toUpperCase()} ${v.strike} SD`;
+              }
+            });
+            // basket.orders = basket.orders.filter(
+            //   (bo: any) => bo.symbolId != undefined
+            // );
+          });
+        }
+
         this.baskets.forEach((basket: any) => {
           basket.orders.forEach((v: any, index: number) => {
             let symbolVal: any = this.tradeService.allStockList.find(
               (s: any) => s.symbol == v.symbol
             );
+
             if (symbolVal != undefined) {
               v.symbolId = symbolVal.symbolId;
               v.alias = symbolVal.alias;
@@ -5462,9 +5540,9 @@ export class TradeComponent implements OnInit {
               } ${moment(v.expiry).format('MMM').toUpperCase()} ${v.strike} SD`;
             }
           });
-          basket.orders = basket.orders.filter(
-            (bo: any) => bo.symbolId != undefined
-          );
+          // basket.orders = basket.orders.filter(
+          //   (bo: any) => bo.symbolId != undefined
+          // );
         });
         this.getOrderList();
       });
