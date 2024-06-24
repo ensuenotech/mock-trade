@@ -1736,7 +1736,7 @@ export class TradeComponent implements OnInit {
             this.placeTradeOrder(obj);
           }
         });
-        this.placeTradeOrder(obj);
+        // this.placeTradeOrder(obj);
       } else {
         let margin = 0;
         final.forEach((f: any) => {
@@ -5495,9 +5495,9 @@ export class TradeComponent implements OnInit {
                     } ${moment(v.expiry).format('MMM').toUpperCase()} ${v.strike} SD`;
                   }
                 });
-                // basket.orders = basket.orders.filter(
-                //   (bo: any) => bo.symbolId != undefined
-                // );
+                basket.orders = basket.orders.filter(
+                  (bo: any) => bo.symbolId != undefined
+                );
               });
             });
         }
@@ -5598,6 +5598,7 @@ export class TradeComponent implements OnInit {
             expiry: val.expiry,
             strategy: val.strategy,
             lotSize: lotSize,
+            
             quantity:
               val.operationType == 'sell' ? -1 * val.quantity : val.quantity,
           };
@@ -5759,19 +5760,20 @@ export class TradeComponent implements OnInit {
             })
             .subscribe(
               (_data: any) => {
-                let data: { guid: string; id: Number }[] = _data;
-                data.forEach((element) => {
-                  if (
-                    this.totalOrderList.some(
-                      (t: { guid: string; id: Number }) =>
-                        t.guid == element.guid
-                    )
-                  )
-                    this.totalOrderList.find(
-                      (t: { guid: string; id: Number }) =>
-                        t.guid == element.guid
-                    ).id = element.id;
-                });
+                // let data: { guid: string; id: Number }[] = _data;
+                // data.forEach((element) => {
+                //   if (
+                //     this.totalOrderList.some(
+                //       (t: { guid: string; id: Number }) =>
+                //         t.guid == element.guid
+                //     )
+                //   )
+                //     this.totalOrderList.find(
+                //       (t: { guid: string; id: Number }) =>
+                //         t.guid == element.guid
+                //     ).id = element.id;
+                // });
+                console.log("bnasket executed");
                 this.loading = false;
                 this._snackBar.open('Basket Executed', 'Dismiss', {
                   duration: 2000,
