@@ -215,7 +215,8 @@ export class TradeComponent implements OnInit {
     if (this.tradeSocket === undefined) {
       this.tradeSocket = this.services.GetTradeSocketConn();
       this.tradeSocket.on('tradeexecuted', (e: any) => {
-        let trade = JSON.parse(e);
+        // let trade = JSON.parse(e);
+        let trade =e 
         this.toastr.success(`Trade Executed`, `${trade.guid}`);
 
         // console.log(trade)
@@ -1288,17 +1289,7 @@ export class TradeComponent implements OnInit {
       if (environment.mode == 'live') {
         this.tradeService.buyOrSell(inputParam).subscribe(
           (_data: any) => {
-            let data: { guid: string; id: Number }[] = _data;
-            data.forEach((element) => {
-              if (
-                this.totalOrderList.some(
-                  (t: { guid: string; id: Number }) => t.guid == element.guid
-                )
-              )
-                this.totalOrderList.find(
-                  (t: { guid: string; id: Number }) => t.guid == element.guid
-                ).id = element.id;
-            });
+            
             this.loading = false;
 
             this.getOrderList();
@@ -5773,7 +5764,7 @@ export class TradeComponent implements OnInit {
                 //         t.guid == element.guid
                 //     ).id = element.id;
                 // });
-                console.log("bnasket executed");
+                
                 this.loading = false;
                 this._snackBar.open('Basket Executed', 'Dismiss', {
                   duration: 2000,

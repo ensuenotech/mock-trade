@@ -17,7 +17,7 @@ export class httpInterceptor implements HttpInterceptor {
     // add authorization header to request
     //Get Token data from local storage
 
-    let tokenInfo = (request.url.includes('straddly.com') || request.url.includes('localhost')) ? localStorage.getItem('userToken') : sessionStorage.getItem('token');
+    let tokenInfo =  localStorage.getItem('userToken') ;
     if (tokenInfo) {
       request = request.clone({
         setHeaders: {

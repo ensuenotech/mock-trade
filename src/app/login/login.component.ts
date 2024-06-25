@@ -61,7 +61,7 @@ export class LoginComponent implements OnInit {
             })
           }
           let params = this.route.snapshot.queryParams
-          console.log("grgr", params)
+       
           if (params?.['redirect']) {
             window.location.href = '/' + params['redirect']
           }
