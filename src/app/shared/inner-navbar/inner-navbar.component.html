@@ -171,49 +171,7 @@
         >Positions</a
       >
     
-      <a
-        [routerLink]="['/trade', 'all-positions-symbolwise']" *ngIf="userService.userDetails.userType=='ADMIN'"
-        [ngClass]="
-          selectedPath == 'all-positions-symbolwise'
-          ? 'border-indigo-500 text-indigo-700 bg-indigo-50'
-            : 'border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700'
-        "
-         class="block border-l-4 py-2 pl-3 pr-4 text-base font-medium"
-        >P.Symbolwise</a
-      >
-   
-      <a
-        routerLink="/admin/users" *ngIf="userService.userDetails.userType=='ADMIN'"
-        [ngClass]="
-          selectedPath == 'users'
-          ? 'border-indigo-500 text-indigo-700 bg-indigo-50'
-            : 'border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700'
-        "
-         class="block border-l-4 py-2 pl-3 pr-4 text-base font-medium"
-        >Users</a
-      >
     
-      <a
-        routerLink="/trade/admin-orders" *ngIf="userService.userDetails.userType=='ADMIN'"
-        [ngClass]="
-          selectedPath == 'admin-orders'
-          ? 'border-indigo-500 text-indigo-700 bg-indigo-50'
-            : 'border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700'
-        "
-         class="block border-l-4 py-2 pl-3 pr-4 text-base font-medium"
-        >Exchange Orders</a
-      >
-    
-      <a
-        routerLink="/trade/payouts" *ngIf="userService.userDetails.userType=='ADMIN'"
-        [ngClass]="
-          selectedPath == 'payouts'
-          ? 'border-indigo-500 text-indigo-700 bg-indigo-50'
-            : 'border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700'
-        "
-         class="block border-l-4 py-2 pl-3 pr-4 text-base font-medium"
-        >Payouts</a
-      >
     </div>
   </div>
 </nav>

@@ -6,6 +6,7 @@ export const environment = {
   production: false,
   // coreAppURL: "https://localhost:44330",
   coreAppURL: "https://testapi.i4option.com",
+  // tradeAPI_URL: "http://localhost:3000",
   tradeAPI_URL: "https://wsapimarket.niftyaction.com",
   stockDetailsURL: "https://testapi.i4option.com",
   // wsTradeURL: "ws://localhost:3000/",
