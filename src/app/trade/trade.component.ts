@@ -195,6 +195,7 @@ export class TradeComponent implements OnInit {
         (x: any) => moment(x.expiry).toDate() >= moment().toDate()
       );
       res.sort(predicateBy('symbolId'));
+      res.sort(predicateBy('expiry'));
       this.tradeList = res.splice(0, 25);
       this.getLTP(res.map((x: any) => x.symbol));
       this.showSearchList = true;
