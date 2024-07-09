@@ -23,7 +23,7 @@ export class AuthService {
   isAdminUser() {
     const token = localStorage.getItem('userToken');
     const parsedToken = parseJwt(token);
-    let user = parsedToken.userType;
+    let user = parsedToken.sub;
     if (user == "ADMIN") {
       return true
     }
