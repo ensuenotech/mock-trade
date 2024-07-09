@@ -72,7 +72,7 @@
             >Trade</a
           >
           <a
-          *ngIf="authService.isAdminUser"
+          *ngIf="authService.isAdminUser()"
           [routerLink]="['/trade', 'all-positions-userwise']"
           [ngClass]="
             selectedPath == '/trade/all-positions-userwise'
@@ -172,7 +172,7 @@
       >
       <a
       [routerLink]="['/trade', 'all-positions-userwise']"
-          *ngIf="authService.isAdminUser"
+          *ngIf="authService.isAdminUser()"
           [ngClass]="
           selectedPath == 'trade'
             ? 'border-indigo-500 text-indigo-700 bg-indigo-50'
