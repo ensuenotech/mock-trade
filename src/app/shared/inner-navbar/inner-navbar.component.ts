@@ -68,7 +68,7 @@ clearInterval(this.timer)
     public userService: UserService,
     private router: Router,
     private renderer: Renderer2,
-    private authService: AuthService
+    public authService: AuthService
   ) {
    this.timer= setInterval(()=>{
       this.datetime = new Date()

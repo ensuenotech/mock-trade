@@ -73,7 +73,7 @@ export class AllPositionsUserwiseComponent {
     });
   }
   getOrderList() {
-    this.tradeService.allTrades( undefined).subscribe(
+    this.tradeService.allTradesByDateAdmin( moment().toDate()).subscribe(
       (data: any) => {
         let symbols: any[] = [];
         data = data.filter((d: any) => d.status == 'executed');
@@ -629,7 +629,6 @@ export class AllPositionsUserwiseComponent {
     return _firstPart + _secondPart;
   }
   exitOrderPlacement(position: any, userId: any) {
-    debugger;
     var quotient = position.quantity / (position.lotSize * 20);
     var remainder = position.quantity % (position.lotSize * 20);
     remainder = remainder < 0 ? remainder * -1 : remainder;

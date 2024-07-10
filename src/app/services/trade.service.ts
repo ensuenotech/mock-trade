@@ -47,6 +47,9 @@ export class TradeService {
   allTradesByDate(date:any){
     return this.http.post(this.API_URL + `/api/user/getAllTradesByDate`, JSON.stringify(date), httpOptions);
   }
+  allTradesByDateAdmin(date:any){
+    return this.http.post(this.API_URL + `/api/user/allTradesByDate`, JSON.stringify(date), httpOptions);
+  }
   getOrderdetails(id:any){
     return this.http.post(this.API_URL + `/api/trade/order`, JSON.stringify(id), httpOptions);
   }

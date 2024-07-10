@@ -71,6 +71,17 @@
             class="cursor-pointer inline-flex items-center border-b-2  px-1 pt-1 text-sm font-medium"
             >Trade</a
           >
+          <a
+          *ngIf="authService.isAdminUser()"
+          [routerLink]="['/trade', 'all-positions-userwise']"
+          [ngClass]="
+            selectedPath == '/trade/all-positions-userwise'
+              ? 'border-indigo-500'
+              : 'text-gray-500 hover:border-gray-300 hover:text-gray-700 border-transparent'
+          "
+          class="cursor-pointer inline-flex items-center border-b-2  px-1 pt-1 text-sm font-medium"
+          >P.Userwise</a
+        >
         </div>
         
       </div>
@@ -159,18 +170,18 @@
         class="block border-l-4 py-2 pl-3 pr-4 text-base font-medium"
         >Trade</a
       >
-    
       <a
-        [routerLink]="['/trade', 'all-positions']" *ngIf="userService.userDetails.userType=='ADMIN'"
-        [ngClass]="
-          selectedPath == 'all-positions'
-          ? 'border-indigo-500 text-indigo-700 bg-indigo-50'
+      [routerLink]="['/trade', 'all-positions-userwise']"
+          *ngIf="authService.isAdminUser()"
+          [ngClass]="
+          selectedPath == 'trade'
+            ? 'border-indigo-500 text-indigo-700 bg-indigo-50'
             : 'border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700'
         "
-         class="block border-l-4 py-2 pl-3 pr-4 text-base font-medium"
-        >Positions</a
+        class="block border-l-4 py-2 pl-3 pr-4 text-base font-medium"
+        >p.Userwise</a
       >
-    
+
     
     </div>
   </div>
