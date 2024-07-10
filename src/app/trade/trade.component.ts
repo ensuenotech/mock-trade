@@ -217,23 +217,22 @@ export class TradeComponent implements OnInit {
       this.tradeSocket = this.services.GetTradeSocketConn();
       this.tradeSocket.on('tradeexecuted', (e: any) => {
         // let trade = JSON.parse(e);
-        let trade =e 
+        
+        let trade =JSON.parse(e)
         this.toastr.success(`Trade Executed`, `${trade.guid}`);
 
-        // console.log(trade)
         // console.log(this.totalOrderList)
         // console.log(this.totalOrderList.find((x:any)=>x.guid==trade.guid))
 
-        if (trade.OrderAverageTradedPrice) {
-          if (!this.totalOrderList.some((x: any) => x.guid == trade.guid)) {
+        if (trade.price) {
+        // console.log(trade)
+        if (!this.totalOrderList.some((x: any) => x.guid == trade.guid)) {
             this.totalOrderList.push(trade);
           }
           if (!this.orderListDisplay.some((x: any) => x.guid == trade.guid)) {
             this.orderListDisplay.push(trade);
           }
-          setTimeout(() => {
             this.getOrderList();
-          }, 1000);
         }
 
         this.totalOrderList
@@ -1211,17 +1210,6 @@ export class TradeComponent implements OnInit {
       if (environment.mode == 'live') {
         this.tradeService.buyOrSell(inputParam).subscribe(
           (_data: any) => {
-            let data: { guid: string; id: Number }[] = _data;
-            data.forEach((element) => {
-              if (
-                this.totalOrderList.some(
-                  (t: { guid: string; id: Number }) => t.guid == element.guid
-                )
-              )
-                this.totalOrderList.find(
-                  (t: { guid: string; id: Number }) => t.guid == element.guid
-                ).id = element.id;
-            });
             this.loading = false;
 
             this.getOrderList();
@@ -1717,7 +1705,7 @@ export class TradeComponent implements OnInit {
           let margin = 0;
           margin += Number(res);
 
-          if (margin > this.dayStartWalletBalance) {
+          if (margin > this.walletBalance) {
             this._snackBar.open('Insufficient Funds', 'Dismiss', {
               duration: 2000,
               horizontalPosition: this.horizontalPosition,
