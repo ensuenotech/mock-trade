@@ -73,7 +73,7 @@ export class AllPositionsUserwiseComponent {
     });
   }
   getOrderList() {
-    this.tradeService.allTradesByDateAdmin( moment().toDate()).subscribe(
+    this.tradeService.allTradesByDateAdmin(moment().toDate()).subscribe(
       (data: any) => {
         let symbols: any[] = [];
         data = data.filter((d: any) => d.status == 'executed');
@@ -263,6 +263,13 @@ export class AllPositionsUserwiseComponent {
       event.target.attributes['data-sort'].value = 'desc';
       this.allPositions.sort(predicateBy(orderBy));
     }
+  }
+  exitTotal() {
+    this.allPositions
+      .filter((x: any) => x.positionsLength > 0)
+      .forEach((element: any) => {
+        this.exitAll(element.positionList);
+      });
   }
   async exitAll(_positions: any) {
     this.loading = true;
