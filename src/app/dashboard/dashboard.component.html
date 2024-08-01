@@ -1011,7 +1011,7 @@
                                   scope="col"
                                   class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                                   data-sort="desc"
-                                  (click)="handleSort('createdOn', $event)"
+                                  (click)="handleSort('date', $event)"
                                 >
                                   Date <i class="fa fa-caret-up"></i>
                                 </th>
@@ -1061,7 +1061,7 @@
                                 <td
                                   class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
                                 >
-                                  {{ item.createdOn | date : "dd MMM YYYY" }}
+                                  {{ item.date | date : "dd MMM YYYY" }}
                                 </td>
                                 <td
                                   class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
