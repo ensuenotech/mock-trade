@@ -455,6 +455,10 @@ export class DashboardComponent implements OnInit {
             (s: any) => s.symbol == order.symbol
           )?.alias
         }`;
+        if(order.alias=="undefined")
+        {
+          order.alias = order.symbol
+        }
 
       return order;
     });
