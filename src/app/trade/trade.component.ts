@@ -98,6 +98,7 @@ export class TradeComponent implements OnInit {
   brokerage: number = 0;
   buyingAmount: number = 0;
   sellingAmount: number = 0;
+  margin:any;
   sortState: any = [
     { column: 'symbol', state: 'asc' },
     { column: 'changePercentage', state: 'asc' },
@@ -267,8 +268,7 @@ export class TradeComponent implements OnInit {
         );
         // console.log(this.orderList)
         this.positionList = this.newPositionListData(this.orderList);
-
-        // console.log(trade.price);
+    
         // this.orderListDisplay.find((t: any) => trade.guid == t.guid).price =
         //   trade.price;
         // console.log(this.orderList.length)
@@ -1338,7 +1338,7 @@ export class TradeComponent implements OnInit {
   _buyOrSellStock() {
     if (this.buyOrSellModel.isBasket ?? false) {
       if (this.buyOrSellModel.basketName == 'new') {
-        console.log('new basket name', this.buyOrSellModel.newBasketName);
+        // console.log('new basket name', this.buyOrSellModel.newBasketName);
         if (this.buyOrSellModel.newBasketName)
           this.tradeService
             .createBasket(this.buyOrSellModel.newBasketName)
@@ -1704,6 +1704,7 @@ export class TradeComponent implements OnInit {
           // this.loading = false;
           let margin = 0;
           margin += Number(res);
+          
 
           if (margin > this.walletBalance) {
             this._snackBar.open('Insufficient Funds', 'Dismiss', {
@@ -2218,9 +2219,6 @@ export class TradeComponent implements OnInit {
               //     order.ltp = order.ltp1 + order.ltp2 - order.ltp3 - order.ltp4;
               //   });
               this.positionList = this.newPositionListData(this.orderList);
-
-              // console.log(this.positionList)
-              // console.log(this.orderList)
             });
         }
         //  else {
@@ -2341,6 +2339,8 @@ export class TradeComponent implements OnInit {
   //   }
   // }
   newPositionListData(_orderList: any[]) {
+    // console.log("_orderList",_orderList)
+    
     let orders: any = [];
     let masterPositionList: any = [];
     let grped = _.groupBy(_orderList, 'orderType');
@@ -2558,21 +2558,45 @@ export class TradeComponent implements OnInit {
     });
 
     finalPositions.sort(predicateBy('alias'));
-    // console.log(_.sum(
-    //   finalPositions.map((position: any) => {
-    //     return position.pandl;
-    //   })
-    // ))
-    this.walletBalance =
-      this.dayStartWalletBalance +
-      _.sum(
-        finalPositions.map((position: any) => {
-          return position.pandl;
-        })
-      );
-    return finalPositions;
-  }
 
+    const mappedArray = this.mapObjectsArray(_orderList);
+    this.tradeService.getMargin(mappedArray).subscribe((res: any) => {
+      let margin = 0;
+      margin += Number(res);
+      this.margin=margin
+    })
+    
+        let amt=_.sum(
+         finalPositions.map((position: any) => {
+           return position.pandl;
+         })
+ 
+)
+{
+  this.walletBalance =
+      this.dayStartWalletBalance +amt-this.margin
+}
+    // this.walletBalance =
+    //   this.dayStartWalletBalance +amt
+      // console.log(this.walletBalance)//1105050.25 ,1031044.25
+    return finalPositions
+// })
+  }
+  mapObjectsArray(secondArray: any[]): any[] {
+    return secondArray.map((secondObj: any) => ({
+      expiry: secondObj.expiry, // map expiry
+      lotSize: secondObj.quantity, // map quantity to lotSize (if relevant)
+      price: secondObj.price, // map price
+      quantity: secondObj.quantity, // map quantity
+      strategy: secondObj.strategy, // map strategy
+      strike: secondObj.strike, // map strike
+      symbol: secondObj.symbol, // map symbol
+      transactionType: secondObj.operationType, // map operationType to transactionType
+      triggerPrice: secondObj.triggerPrice, // map triggerPrice
+      userId: this.authService.getUserId(), // map userId as string
+    }));
+  }
+ 
   savePosition(obj: any) {
     let inputParam = {
       userId: this.userId,
@@ -5187,7 +5211,7 @@ export class TradeComponent implements OnInit {
     let trades = this.filterPositions(this.positionList)
       .filter((x: any) => x.quantity != 0 && x.checked)
       .map((position: any) => {
-        console.log(position);
+        // console.log(position);
         let obj = new buyAndSellStock();
         obj.alias = position.alias;
         obj.expiry = position.expiry;
@@ -5230,7 +5254,7 @@ export class TradeComponent implements OnInit {
       },
       (err: any) => {}
     );
-    console.log(trades);
+    // console.log(trades);
   }
   delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));

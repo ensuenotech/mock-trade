@@ -51,33 +51,35 @@ export class LoginComponent implements OnInit {
     if (token) {
       
       this.userService.validateToken(token).subscribe((res: any) => {
-        if (res.result) {
-          
+        debugger
+        if (res?.result) {
+          // If the response contains a valid result
           localStorage.setItem('userToken', res.token);
-          const userId = this.authService.getUserId()
+          const userId = this.authService.getUserId();
+          
           if (userId) {
-            this.userService.getUserDetails(userId).subscribe((res: any) => {
-              localStorage.setItem("userdata", this.encService.encrypt(JSON.stringify(res)))
-            })
+            this.userService.getUserDetails(userId).subscribe((userRes: any) => {
+              localStorage.setItem("userdata", this.encService.encrypt(JSON.stringify(userRes)));
+            });
           }
-          let params = this.route.snapshot.queryParams
-       
+      
+          let params = this.route.snapshot.queryParams;
+          
           if (params?.['redirect']) {
-            window.location.href = '/' + params['redirect']
+            window.location.href = '/' + params['redirect'];
+          } else {
+            window.location.href = '/trade';
           }
-          else {
-            window.location.href = '/trade'
-          }
-
+          
+        } else {
+          // If the response is null, redirect to the dashboard login
+          window.location.href = "https://dashboard.i4option.com/login";
         }
-      })
-    } else {
-      // setTimeout(() => {
-      //   window.location.href = "https://dashboard.i4option.com/login"
-        
-      // }, 1000);
-
-    }
+      }, (error) => {
+        // Handle any error that occurs during the token validation
+        window.location.href = "https://dashboard.i4option.com/login";
+      });
+    }      
   }
 
   ngOnInit(): void {
