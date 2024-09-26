@@ -1224,7 +1224,7 @@
                                   </svg>
                                 </button>
                               </div>
-                              <div *ngIf="item.editMode">
+                              <div *ngIf="item.editMode && item.rateType != 'STOPLIMIT'">
                                 <div>
                                   <div class="mt-2 flex rounded-md shadow-sm">
                                     <input
@@ -1276,6 +1276,122 @@
                                       />
                                     </svg>
                                   </button>
+                                  </div>
+                                </div>
+                              </div>
+                              <div *ngIf="item.editMode && item.rateType == 'STOPLIMIT'">
+                                <div>
+                                  <div class="mt-2 flex">
+                                    <label class="block text-gray-400 text-xs font-bold mb-2"
+                                        >Trigger Price</label
+                                      >
+                                      <div class="flex ml-auto">
+                                      <input
+                                        type="number"
+                                        name="triggerPrice"
+                                        min="0"
+                                        id="triggerPrice"
+                                        step="0.05"
+                                        [(ngModel)]="item.triggerPrice"
+                                        class="block ml-4 w-20 rounded-none rounded-l-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                      />
+                                      <button
+                                      (click)="updateOrder(item)"
+                                      type="button"
+                                      class="relative text-green-600 -ml-px inline-flex items-center gap-x-1.5 p-1 px-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-6 h-6"
+                                      >
+                                        <path
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                        />
+                                      </svg>
+                                    </button>
+                                    <button
+                                      (click)="item.editMode = false"
+                                      type="button"
+                                      class="relative text-gray-600 -ml-px inline-flex items-center gap-x-1.5 rounded-r-md p-1 px-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-6 h-6"
+                                      >
+                                        <path
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                        />
+                                      </svg>
+                                    </button></div>
+                                    </div>
+                                    <div class="mt-2 flex" *ngIf="item.rateType=='STOPLIMIT'">
+                                    <label class="block  text-gray-400 text-xs font-bold mb-2"
+                                      >Price</label
+                                    >
+                                    <div class="flex ml-auto">
+                                    <input
+                                      type="number"
+                                      name="price"
+                                      min="0"
+                                      id="price"
+                                      step="0.05"
+                                      [(ngModel)]="item.price"
+                                      class="block w-20 rounded-none rounded-l-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                    />
+                                   
+                                    <button
+                                      (click)="updateOrder(item)"
+                                      type="button"
+                                      class="relative text-green-600 -ml-px inline-flex items-center gap-x-1.5 p-1 px-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-6 h-6"
+                                      >
+                                        <path
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                        />
+                                      </svg>
+                                    </button>
+                                    <button
+                                      (click)="item.editMode = false"
+                                      type="button"
+                                      class="relative text-gray-600 -ml-px inline-flex items-center gap-x-1.5 rounded-r-md p-1 px-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-6 h-6"
+                                      >
+                                        <path
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                          d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                        />
+                                      </svg>
+                                    </button>
+                                    </div>
                                   </div>
                                 </div>
                               </div>

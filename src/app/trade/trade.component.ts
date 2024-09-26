@@ -266,7 +266,6 @@ export class TradeComponent implements OnInit {
         this.orderList = this.totalOrderList.filter(
           (t: any) => t.status == 'executed'
         );
-        // console.log(this.orderList)
         this.positionList = this.newPositionListData(this.orderList);
     
         // this.orderListDisplay.find((t: any) => trade.guid == t.guid).price =
@@ -2051,6 +2050,7 @@ export class TradeComponent implements OnInit {
           (v: any) => v.status == 'open' || v.status == 'new'
         );
 
+        console.log("openOrderList",this.openOrderList)
         this.orderList = data.filter((t: any) => t.status == 'executed');
         this.orderListDisplay = data.filter(
           (t: any) => !(t.status == 'open' || t.status == 'new')
@@ -2897,11 +2897,13 @@ export class TradeComponent implements OnInit {
     );
   }
   filterOrderList(orderList: any) {
+    // console.log("console.log(orderList)",orderList)
     return orderList.filter(
       (item: any) =>
         moment(getIST()).format('YYYY-MM-DD') ==
         moment(item.time).format('YYYY-MM-DD')
     );
+    // console.log(orderList)
   }
   download(item: any) {}
   filterSection(selected: any) {
@@ -5236,7 +5238,7 @@ export class TradeComponent implements OnInit {
       });
     this.loading = true;
     this.openOrderList.push([...trades]);
-
+console.log("openOrderList",this.openOrderList)
     let inputParam = {
       userId: this.userId,
       list: trades,
