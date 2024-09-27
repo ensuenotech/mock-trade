@@ -98,7 +98,7 @@ export class TradeComponent implements OnInit {
   brokerage: number = 0;
   buyingAmount: number = 0;
   sellingAmount: number = 0;
-  margin:any;
+  margin: any;
   sortState: any = [
     { column: 'symbol', state: 'asc' },
     { column: 'changePercentage', state: 'asc' },
@@ -218,22 +218,22 @@ export class TradeComponent implements OnInit {
       this.tradeSocket = this.services.GetTradeSocketConn();
       this.tradeSocket.on('tradeexecuted', (e: any) => {
         // let trade = JSON.parse(e);
-        
-        let trade =JSON.parse(e)
+
+        let trade = JSON.parse(e)
         this.toastr.success(`Trade Executed`, `${trade.guid}`);
 
         // console.log(this.totalOrderList)
         // console.log(this.totalOrderList.find((x:any)=>x.guid==trade.guid))
 
         if (trade.price) {
-        // console.log(trade)
-        if (!this.totalOrderList.some((x: any) => x.guid == trade.guid)) {
+          // console.log(trade)
+          if (!this.totalOrderList.some((x: any) => x.guid == trade.guid)) {
             this.totalOrderList.push(trade);
           }
           if (!this.orderListDisplay.some((x: any) => x.guid == trade.guid)) {
             this.orderListDisplay.push(trade);
           }
-            this.getOrderList();
+          this.getOrderList();
         }
 
         this.totalOrderList
@@ -267,7 +267,7 @@ export class TradeComponent implements OnInit {
           (t: any) => t.status == 'executed'
         );
         this.positionList = this.newPositionListData(this.orderList);
-    
+
         // this.orderListDisplay.find((t: any) => trade.guid == t.guid).price =
         //   trade.price;
         // console.log(this.orderList.length)
@@ -348,16 +348,16 @@ export class TradeComponent implements OnInit {
       this.tradeSocket.on('reconnect', () => {
         this.getTradeSocket().send(
           `{ "method" : "handshake", "userId":` +
-            JSON.stringify(this.userId) +
-            `}`
+          JSON.stringify(this.userId) +
+          `}`
         );
         this.subscribeSymbols(this.subscribedSymbols);
       });
       this.tradeSocket.on('connect', () => {
         this.getTradeSocket().send(
           `{ "method" : "handshake", "userId":` +
-            JSON.stringify(this.userId) +
-            `}`
+          JSON.stringify(this.userId) +
+          `}`
         );
       });
       this.tradeSocket?.on('ack', () => {
@@ -574,7 +574,7 @@ export class TradeComponent implements OnInit {
               });
             });
           },
-          (error) => {}
+          (error) => { }
         );
       }
       this.subscribeSymbols(symbols);
@@ -627,7 +627,7 @@ export class TradeComponent implements OnInit {
           }
         });
       },
-      (err: any) => {}
+      (err: any) => { }
     );
   }
 
@@ -922,7 +922,7 @@ export class TradeComponent implements OnInit {
         });
         this.saveWatchList();
       },
-      (err: any) => {}
+      (err: any) => { }
     );
   }
 
@@ -952,7 +952,7 @@ export class TradeComponent implements OnInit {
           this.getWatchList(true);
           this.toastr.success('Symbol Added Successfully In WatchList.');
         },
-        (err: any) => {}
+        (err: any) => { }
       );
     }
   }
@@ -1131,12 +1131,10 @@ export class TradeComponent implements OnInit {
 
     if (obj.strategy == 'watchlist') obj.strategy = 'options';
     else if (obj.strategy == 'straddle') {
-      obj.ceSymbol = `${
-        this.stockList.find((s: any) => s.displayName == obj.symbol).name
-      }${moment(obj.expiry).format('YYMMDD')}${obj.strike}CE`;
-      obj.peSymbol = `${
-        this.stockList.find((s: any) => s.displayName == obj.symbol).name
-      }${moment(obj.expiry).format('YYMMDD')}${obj.strike}PE`;
+      obj.ceSymbol = `${this.stockList.find((s: any) => s.displayName == obj.symbol).name
+        }${moment(obj.expiry).format('YYMMDD')}${obj.strike}CE`;
+      obj.peSymbol = `${this.stockList.find((s: any) => s.displayName == obj.symbol).name
+        }${moment(obj.expiry).format('YYMMDD')}${obj.strike}PE`;
     }
 
     var lotSize = selectedItemObj.lotSize;
@@ -1221,8 +1219,8 @@ export class TradeComponent implements OnInit {
       }
       this.getTradeSocket().send(
         `{ "method" : "addtrade", "data":` +
-          JSON.stringify(inputParam.list) +
-          `}`
+        JSON.stringify(inputParam.list) +
+        `}`
       );
       await this.delay(1000);
     }
@@ -1277,7 +1275,7 @@ export class TradeComponent implements OnInit {
       if (environment.mode == 'live') {
         this.tradeService.buyOrSell(inputParam).subscribe(
           (_data: any) => {
-            
+
             this.loading = false;
 
             this.getOrderList();
@@ -1290,8 +1288,8 @@ export class TradeComponent implements OnInit {
 
       this.getTradeSocket().send(
         `{ "method" : "addtrade", "data":` +
-          JSON.stringify(inputParam.list) +
-          `}`
+        JSON.stringify(inputParam.list) +
+        `}`
       );
       // setTimeout(() => {
       //   this.selectedWatchListElement = null;
@@ -1301,14 +1299,12 @@ export class TradeComponent implements OnInit {
     let symbols: any[] = [];
 
     if (obj.strategy == 'straddle' || obj.strategy == 'ironfly') {
-      var symbol = `${
-        this.stockList.find((s: any) => s.displayName == obj.symbol)?.name
-      }${moment(obj.expiry).format('YYMMDD').toUpperCase()}${obj.strike}CE`;
+      var symbol = `${this.stockList.find((s: any) => s.displayName == obj.symbol)?.name
+        }${moment(obj.expiry).format('YYMMDD').toUpperCase()}${obj.strike}CE`;
       if (!symbols.some((s) => s == symbol)) symbols.push(symbol);
 
-      symbol = `${
-        this.stockList.find((s: any) => s.displayName == obj.symbol)?.name
-      }${moment(obj.expiry).format('YYMMDD').toUpperCase()}${obj.strike}PE`;
+      symbol = `${this.stockList.find((s: any) => s.displayName == obj.symbol)?.name
+        }${moment(obj.expiry).format('YYMMDD').toUpperCase()}${obj.strike}PE`;
       if (!symbols.some((s) => s == symbol)) symbols.push(symbol);
     } else {
       if (!symbols.some((s) => s == obj.symbol)) symbols.push(obj.symbol);
@@ -1458,9 +1454,8 @@ export class TradeComponent implements OnInit {
       }
     } else
       Swal.fire({
-        text: `You are ${this.buyOrSellModel.sell ? 'Selling' : 'Buying'} ${
-          this.totalBuyOrSellQty
-        } lot(s) of ${this.selectedWatchListElement.alias}`,
+        text: `You are ${this.buyOrSellModel.sell ? 'Selling' : 'Buying'} ${this.totalBuyOrSellQty
+          } lot(s) of ${this.selectedWatchListElement.alias}`,
         showCancelButton: true,
         showConfirmButton: true,
         icon: 'info',
@@ -1496,7 +1491,7 @@ export class TradeComponent implements OnInit {
         if (
           this.buyOrSellModel.sell &&
           this.selectedWatchListElement['ltp'] <
-            this.buyOrSellModel.triggerPrice &&
+          this.buyOrSellModel.triggerPrice &&
           this.buyOrSellModel.triggerPrice < this.buyOrSellModel.price
         ) {
           Swal.fire('', 'Please check prices', 'error');
@@ -1505,7 +1500,7 @@ export class TradeComponent implements OnInit {
         if (
           !this.buyOrSellModel.sell &&
           this.selectedWatchListElement['ltp'] >
-            this.buyOrSellModel.triggerPrice &&
+          this.buyOrSellModel.triggerPrice &&
           this.buyOrSellModel.triggerPrice > this.buyOrSellModel.price
         ) {
           Swal.fire('', 'Please check prices', 'error');
@@ -1518,7 +1513,7 @@ export class TradeComponent implements OnInit {
         if (
           this.buyOrSellModel.sell &&
           this.selectedWatchListElement['ltp'] <
-            this.buyOrSellModel.triggerPrice
+          this.buyOrSellModel.triggerPrice
         ) {
           Swal.fire('', 'Please check prices', 'error');
           return;
@@ -1526,7 +1521,7 @@ export class TradeComponent implements OnInit {
         if (
           !this.buyOrSellModel.sell &&
           this.selectedWatchListElement['ltp'] >
-            this.buyOrSellModel.triggerPrice
+          this.buyOrSellModel.triggerPrice
         ) {
           Swal.fire('', 'Please check prices', 'error');
           return;
@@ -1565,11 +1560,9 @@ export class TradeComponent implements OnInit {
             lotSize = this.tradeService.allStockList.find(
               (s: any) =>
                 s.symbol ==
-                `${
-                  this.stockList.find((s: any) => s.displayName == val.symbol)
-                    .name
-                }${moment(val.expiry).format('YYMMDD').toUpperCase()}${
-                  val.strike
+                `${this.stockList.find((s: any) => s.displayName == val.symbol)
+                  .name
+                }${moment(val.expiry).format('YYMMDD').toUpperCase()}${val.strike
                 }CE`
             )?.lotSize;
           }
@@ -1628,8 +1621,8 @@ export class TradeComponent implements OnInit {
           !f.expiry ||
           (f.expiry &&
             moment(f.expiry).daysInMonth() -
-              Math.round(moment(f.expiry).date()) <
-              7)
+            Math.round(moment(f.expiry).date()) <
+            7)
         ) {
           const sym = this.tradeService.allStockList.find(
             (s: any) => s.symbol == f.symbol
@@ -1698,12 +1691,10 @@ export class TradeComponent implements OnInit {
             };
           }
         );
-
         this.tradeService.getMargin(values).subscribe((res: any) => {
           // this.loading = false;
           let margin = 0;
           margin += Number(res);
-          
 
           if (margin > this.walletBalance) {
             this._snackBar.open('Insufficient Funds', 'Dismiss', {
@@ -1980,14 +1971,12 @@ export class TradeComponent implements OnInit {
         let symbols: any[] = [];
         data.forEach((v: any) => {
           if (v.strategy == 'straddle' || v.strategy == 'ironfly') {
-            var symbol = `${
-              this.stockList.find((s: any) => s.displayName == v.symbol)?.name
-            }${moment(v.expiry).format('YYMMDD').toUpperCase()}${v.strike}CE`;
+            var symbol = `${this.stockList.find((s: any) => s.displayName == v.symbol)?.name
+              }${moment(v.expiry).format('YYMMDD').toUpperCase()}${v.strike}CE`;
             if (!symbols.some((s) => s == symbol)) symbols.push(symbol);
 
-            symbol = `${
-              this.stockList.find((s: any) => s.displayName == v.symbol)?.name
-            }${moment(v.expiry).format('YYMMDD').toUpperCase()}${v.strike}PE`;
+            symbol = `${this.stockList.find((s: any) => s.displayName == v.symbol)?.name
+              }${moment(v.expiry).format('YYMMDD').toUpperCase()}${v.strike}PE`;
             if (!symbols.some((s) => s == symbol)) symbols.push(symbol);
           } else {
             if (!symbols.some((s) => s == v.symbol)) symbols.push(v.symbol);
@@ -2019,13 +2008,11 @@ export class TradeComponent implements OnInit {
 
         data.forEach((v: any) => {
           if (v.strategy == 'straddle') {
-            v.alias = `${
-              this.stockList.find((s: any) => s.displayName == v.symbol).name
-            } ${moment(v.expiry).format('MMM').toUpperCase()} ${v.strike} SD`;
+            v.alias = `${this.stockList.find((s: any) => s.displayName == v.symbol).name
+              } ${moment(v.expiry).format('MMM').toUpperCase()} ${v.strike} SD`;
           } else if (v.strategy == 'ironfly') {
-            v.alias = `${
-              this.stockList.find((s: any) => s.displayName == v.symbol).name
-            } ${moment(v.expiry).format('MMM').toUpperCase()} ${v.strike} IF`;
+            v.alias = `${this.stockList.find((s: any) => s.displayName == v.symbol).name
+              } ${moment(v.expiry).format('MMM').toUpperCase()} ${v.strike} IF`;
           } else {
             let symbolVal: any = this.tradeService.allStockList.find(
               (s: any) => s.symbol == v.symbol
@@ -2050,7 +2037,6 @@ export class TradeComponent implements OnInit {
           (v: any) => v.status == 'open' || v.status == 'new'
         );
 
-        console.log("openOrderList",this.openOrderList)
         this.orderList = data.filter((t: any) => t.status == 'executed');
         this.orderListDisplay = data.filter(
           (t: any) => !(t.status == 'open' || t.status == 'new')
@@ -2079,14 +2065,12 @@ export class TradeComponent implements OnInit {
         this.orderList
           .filter((x: any) => x.strategy == 'straddle')
           .forEach((order: any) => {
-            order.ceSymbol = `${
-              this.stockList.find((s: any) => s.displayName == order.symbol)
+            order.ceSymbol = `${this.stockList.find((s: any) => s.displayName == order.symbol)
                 .name
-            }${moment(order.expiry).format('YYMMDD')}${order.strike}CE`;
-            order.peSymbol = `${
-              this.stockList.find((s: any) => s.displayName == order.symbol)
+              }${moment(order.expiry).format('YYMMDD')}${order.strike}CE`;
+            order.peSymbol = `${this.stockList.find((s: any) => s.displayName == order.symbol)
                 .name
-            }${moment(order.expiry).format('YYMMDD')}${order.strike}PE`;
+              }${moment(order.expiry).format('YYMMDD')}${order.strike}PE`;
 
             if (
               !filterorderListBasedOnSymbol.some((s) => s == order.ceSymbol)
@@ -2225,8 +2209,8 @@ export class TradeComponent implements OnInit {
         //   this.getPositionListData()
         // }
       },
-      () => {},
-      () => {}
+      () => { },
+      () => { }
     );
   }
 
@@ -2339,8 +2323,6 @@ export class TradeComponent implements OnInit {
   //   }
   // }
   newPositionListData(_orderList: any[]) {
-    // console.log("_orderList",_orderList)
-    
     let orders: any = [];
     let masterPositionList: any = [];
     let grped = _.groupBy(_orderList, 'orderType');
@@ -2430,7 +2412,6 @@ export class TradeComponent implements OnInit {
         let filterOrder = ord.orders.filter(
           (s: any) => `${s.alias}-${moment(s.expiry).format('DDMMYY')}` == v
         );
-
         filterOrder.forEach((h: any) => {
           let cal = h.quantity * h.price;
           if (h.operationType == 'buy') {
@@ -2442,8 +2423,10 @@ export class TradeComponent implements OnInit {
           }
           obj.orderType = h.orderType;
           obj.ltp = h.ltp;
-
-          obj.alias = h.alias;
+          obj.price = h.price,
+            obj.triggerPrice = h.triggerPrice,
+            obj.transactionType = h.operationType,
+            obj.alias = h.alias;
           obj.expiry = h.expiry;
           obj.strike = h.strike;
 
@@ -2464,9 +2447,8 @@ export class TradeComponent implements OnInit {
           obj.lotSize = this.tradeService.allStockList.find(
             (s) =>
               s.symbol ==
-              `${
-                this.stockList.find((s: any) => s.displayName == obj.symbol)
-                  .name
+              `${this.stockList.find((s: any) => s.displayName == obj.symbol)
+                .name
               }${moment(obj.expiry).format('YYMMDD')}${obj.strike}CE`
           )?.lotSize;
         } else {
@@ -2554,33 +2536,49 @@ export class TradeComponent implements OnInit {
         peLtp: values[0].peLtp,
         lotSize: values[0].lotSize,
         ddlQuantity: values[0].ddlQuantity,
+        price: values[0].price,
+        triggerPrice: values[0].triggerPrice,
+        operationType: values[0].transactionType
       });
     });
 
     finalPositions.sort(predicateBy('alias'));
 
-    const mappedArray = this.mapObjectsArray(_orderList);
+    finalPositions = finalPositions.filter((item: any) => item.quantity != 0)
+    // var values: IMarginCalculationRequest[] = finalPositions.map(
+    //   (val: any) => {
+
+    //     return {
+    //       price: val.price,
+    //       quantity:val.quantity,
+    //       symbol: val.symbol,
+    //       lotSize: val.lotSize,
+    //       strategy: val.strategy,
+    //       strike: val.strike,
+    //       expiry: val.expiry,
+    //       transactionType: val.transactionType,
+    //       triggerPrice: val.trigger,
+    //       userId: this.authService.getUserId(),
+    //     };
+    //   }
+
+    // ); 
+    const mappedArray = this.mapObjectsArray(finalPositions);
     this.tradeService.getMargin(mappedArray).subscribe((res: any) => {
       let margin = 0;
       margin += Number(res);
-      this.margin=margin
+      this.margin = margin
+      let amt = _.sum(
+        finalPositions.map((position: any) => {
+          return position.pandl;
+        })
+
+      )
+      this.walletBalance =
+        this.dayStartWalletBalance + amt - this.margin
     })
-    
-        let amt=_.sum(
-         finalPositions.map((position: any) => {
-           return position.pandl;
-         })
- 
-)
-{
-  this.walletBalance =
-      this.dayStartWalletBalance +amt-this.margin
-}
-    // this.walletBalance =
-    //   this.dayStartWalletBalance +amt
-      // console.log(this.walletBalance)//1105050.25 ,1031044.25
     return finalPositions
-// })
+    // })
   }
   mapObjectsArray(secondArray: any[]): any[] {
     return secondArray.map((secondObj: any) => ({
@@ -2596,7 +2594,7 @@ export class TradeComponent implements OnInit {
       userId: this.authService.getUserId(), // map userId as string
     }));
   }
- 
+
   savePosition(obj: any) {
     let inputParam = {
       userId: this.userId,
@@ -2613,7 +2611,7 @@ export class TradeComponent implements OnInit {
         },
       ],
     };
-    this.tradeService.savePositionData(inputParam).subscribe((arg: any) => {});
+    this.tradeService.savePositionData(inputParam).subscribe((arg: any) => { });
   }
 
   updatePosition(pos: any, obj: any) {
@@ -2897,15 +2895,13 @@ export class TradeComponent implements OnInit {
     );
   }
   filterOrderList(orderList: any) {
-    // console.log("console.log(orderList)",orderList)
     return orderList.filter(
       (item: any) =>
         moment(getIST()).format('YYYY-MM-DD') ==
         moment(item.time).format('YYYY-MM-DD')
     );
-    // console.log(orderList)
   }
-  download(item: any) {}
+  download(item: any) { }
   filterSection(selected: any) {
     selected = selected.toLowerCase();
     this.selectedSection = selected;
@@ -2983,9 +2979,8 @@ export class TradeComponent implements OnInit {
               let niftySDSymbols: any = [];
               for (var i = -5; i <= 5; i++) {
                 niftySDSymbols.push({
-                  symbol: `NIFTY${selectedDate}${
-                    this.niftyStrikes[niftyStrikeIndex - i]
-                  }CE`,
+                  symbol: `NIFTY${selectedDate}${this.niftyStrikes[niftyStrikeIndex - i]
+                    }CE`,
                   strike: this.niftyStrikes[niftyStrikeIndex - i],
                 });
               }
@@ -3157,17 +3152,15 @@ export class TradeComponent implements OnInit {
                 let bankNiftySDSymbols: any = [];
                 for (var i = -5; i <= 5; i++) {
                   bankNiftySDSymbols.push({
-                    symbol: `BANKNIFTY${selectedDate}${
-                      bankNiftyStrikes[bankNiftyStrikeIndex - i]
-                    }CE`,
+                    symbol: `BANKNIFTY${selectedDate}${bankNiftyStrikes[bankNiftyStrikeIndex - i]
+                      }CE`,
                     strike: bankNiftyStrikes[bankNiftyStrikeIndex - i],
                   });
                 }
                 for (var i = -5; i <= 5; i++) {
                   bankNiftySDSymbols.push({
-                    symbol: `BANKNIFTY${selectedDate}${
-                      bankNiftyStrikes[bankNiftyStrikeIndex - i]
-                    }CE`,
+                    symbol: `BANKNIFTY${selectedDate}${bankNiftyStrikes[bankNiftyStrikeIndex - i]
+                      }CE`,
                     strike: bankNiftyStrikes[bankNiftyStrikeIndex - i],
                   });
                 }
@@ -3336,17 +3329,15 @@ export class TradeComponent implements OnInit {
                   let SDSymbols: any = [];
                   for (var i = -5; i <= 5; i++) {
                     SDSymbols.push({
-                      symbol: `MIDCPNIFTY${selectedDate}${
-                        strikes[strikeIndex - i]
-                      }CE`,
+                      symbol: `MIDCPNIFTY${selectedDate}${strikes[strikeIndex - i]
+                        }CE`,
                       strike: strikes[strikeIndex - i],
                     });
                   }
                   for (var i = -5; i <= 5; i++) {
                     SDSymbols.push({
-                      symbol: `MIDCPNIFTY${selectedDate}${
-                        strikes[strikeIndex - i]
-                      }CE`,
+                      symbol: `MIDCPNIFTY${selectedDate}${strikes[strikeIndex - i]
+                        }CE`,
                       strike: strikes[strikeIndex - i],
                     });
                   }
@@ -3519,9 +3510,8 @@ export class TradeComponent implements OnInit {
                 let finNiftySDSymbols: any = [];
                 for (var i = -5; i <= 5; i++) {
                   finNiftySDSymbols.push({
-                    symbol: `FINNIFTY${selectedDate}${
-                      finNiftyStrikes[finNiftyStrikeIndex - i]
-                    }CE`,
+                    symbol: `FINNIFTY${selectedDate}${finNiftyStrikes[finNiftyStrikeIndex - i]
+                      }CE`,
                     strike: finNiftyStrikes[finNiftyStrikeIndex - i],
                   });
                 }
@@ -4382,9 +4372,8 @@ export class TradeComponent implements OnInit {
                 i--
               ) {
                 finNiftySymbols.push({
-                  symbol: `FINNIFTY${finNiftyselectedDate}${
-                    finNiftyStrikes[finNiftyStrikeIndex - i]
-                  }CE`,
+                  symbol: `FINNIFTY${finNiftyselectedDate}${finNiftyStrikes[finNiftyStrikeIndex - i]
+                    }CE`,
                   strike: finNiftyStrikes[finNiftyStrikeIndex - i],
                 });
               }
@@ -4395,9 +4384,8 @@ export class TradeComponent implements OnInit {
                 i--
               ) {
                 finNiftySymbols.push({
-                  symbol: `FINNIFTY${finNiftyselectedDate}${
-                    finNiftyStrikes[finNiftyStrikeIndex - i]
-                  }PE`,
+                  symbol: `FINNIFTY${finNiftyselectedDate}${finNiftyStrikes[finNiftyStrikeIndex - i]
+                    }PE`,
                   strike: finNiftyStrikes[finNiftyStrikeIndex - i],
                 });
               }
@@ -4560,9 +4548,8 @@ export class TradeComponent implements OnInit {
                 i--
               ) {
                 symbols.push({
-                  symbol: `MIDCPNIFTY${selectedDate}${
-                    strikes[strikeIndex - i]
-                  }CE`,
+                  symbol: `MIDCPNIFTY${selectedDate}${strikes[strikeIndex - i]
+                    }CE`,
                   strike: strikes[strikeIndex - i],
                 });
               }
@@ -4573,9 +4560,8 @@ export class TradeComponent implements OnInit {
                 i--
               ) {
                 symbols.push({
-                  symbol: `MIDCPNIFTY${selectedDate}${
-                    strikes[strikeIndex - i]
-                  }PE`,
+                  symbol: `MIDCPNIFTY${selectedDate}${strikes[strikeIndex - i]
+                    }PE`,
                   strike: strikes[strikeIndex - i],
                 });
               }
@@ -4737,9 +4723,8 @@ export class TradeComponent implements OnInit {
                 i--
               ) {
                 symbols.push({
-                  symbol: `BANKNIFTY${selectedDate}${
-                    strikes[strikeIndex - i]
-                  }CE`,
+                  symbol: `BANKNIFTY${selectedDate}${strikes[strikeIndex - i]
+                    }CE`,
                   strike: strikes[strikeIndex - i],
                 });
               }
@@ -4750,9 +4735,8 @@ export class TradeComponent implements OnInit {
                 i--
               ) {
                 symbols.push({
-                  symbol: `BANKNIFTY${selectedDate}${
-                    strikes[strikeIndex - i]
-                  }PE`,
+                  symbol: `BANKNIFTY${selectedDate}${strikes[strikeIndex - i]
+                    }PE`,
                   strike: strikes[strikeIndex - i],
                 });
               }
@@ -4950,9 +4934,8 @@ export class TradeComponent implements OnInit {
                     i--
                   ) {
                     niftySymbols.push({
-                      symbol: `NIFTY${selectedDate}${
-                        niftyStrikes[niftyStrikeIndex - i]
-                      }CE`,
+                      symbol: `NIFTY${selectedDate}${niftyStrikes[niftyStrikeIndex - i]
+                        }CE`,
                       strike: niftyStrikes[niftyStrikeIndex - i],
                     });
                   }
@@ -4963,9 +4946,8 @@ export class TradeComponent implements OnInit {
                     i--
                   ) {
                     niftySymbols.push({
-                      symbol: `NIFTY${selectedDate}${
-                        niftyStrikes[niftyStrikeIndex - i]
-                      }PE`,
+                      symbol: `NIFTY${selectedDate}${niftyStrikes[niftyStrikeIndex - i]
+                        }PE`,
                       strike: niftyStrikes[niftyStrikeIndex - i],
                     });
                   }
@@ -5238,7 +5220,6 @@ export class TradeComponent implements OnInit {
       });
     this.loading = true;
     this.openOrderList.push([...trades]);
-console.log("openOrderList",this.openOrderList)
     let inputParam = {
       userId: this.userId,
       list: trades,
@@ -5254,7 +5235,7 @@ console.log("openOrderList",this.openOrderList)
         this.getOrderList();
         //commenting getorderlist in order to fetch list outside
       },
-      (err: any) => {}
+      (err: any) => { }
     );
     // console.log(trades);
   }
@@ -5343,18 +5324,15 @@ console.log("openOrderList",this.openOrderList)
       if (this.order?.orderStatus.toLowerCase() == 'filled')
         this.order.orderStatus = 'Executed';
       if (this.order?.strategy == 'straddle') {
-        this.order.alias = `${
-          this.stockList.find((s: any) => s.displayName == this.order.symbol)
+        this.order.alias = `${this.stockList.find((s: any) => s.displayName == this.order.symbol)
             ?.name
-        } ${moment(this.order.expiry).format('MMM').toUpperCase()} ${
-          this.order.strike
-        } SD`;
+          } ${moment(this.order.expiry).format('MMM').toUpperCase()} ${this.order.strike
+          } SD`;
       } else {
-        this.order.alias = `${
-          this.tradeService.allStockList.find(
-            (s: any) => s.symbol == this.order.symbol
-          )?.alias
-        }`;
+        this.order.alias = `${this.tradeService.allStockList.find(
+          (s: any) => s.symbol == this.order.symbol
+        )?.alias
+          }`;
       }
     });
   }
@@ -5442,7 +5420,7 @@ console.log("openOrderList",this.openOrderList)
       guid: item.guid,
       price: item.price,
     };
-    this.tradeService.updateOrder(request).subscribe((res: any) => {});
+    this.tradeService.updateOrder(request).subscribe((res: any) => { });
     Swal.fire('', 'Submitted', 'success');
     item.editMode = false;
   }
@@ -5465,9 +5443,9 @@ console.log("openOrderList",this.openOrderList)
             }
           });
         });
-        
 
-        
+
+
         if (newSymbols.length > 0) {
           this.strikeService
             .getSymbolsDetails(newSymbols)
@@ -5490,15 +5468,14 @@ console.log("openOrderList",this.openOrderList)
                   let symbolVal: any = this.tradeService.allStockList.find(
                     (s: any) => s.symbol == v.symbol
                   );
-      
+
                   if (symbolVal != undefined) {
                     v.symbolId = symbolVal.symbolId;
                     v.alias = symbolVal.alias;
                   }
                   if (v.strategy == 'straddle') {
-                    v.alias = `${
-                      this.stockList.find((s: any) => s.displayName == v.symbol).name
-                    } ${moment(v.expiry).format('MMM').toUpperCase()} ${v.strike} SD`;
+                    v.alias = `${this.stockList.find((s: any) => s.displayName == v.symbol).name
+                      } ${moment(v.expiry).format('MMM').toUpperCase()} ${v.strike} SD`;
                   }
                 });
                 basket.orders = basket.orders.filter(
@@ -5507,21 +5484,20 @@ console.log("openOrderList",this.openOrderList)
               });
             });
         }
-        else{
+        else {
           this.baskets.forEach((basket: any) => {
             basket.orders.forEach((v: any, index: number) => {
               let symbolVal: any = this.tradeService.allStockList.find(
                 (s: any) => s.symbol == v.symbol
               );
-  
+
               if (symbolVal != undefined) {
                 v.symbolId = symbolVal.symbolId;
                 v.alias = symbolVal.alias;
               }
               if (v.strategy == 'straddle') {
-                v.alias = `${
-                  this.stockList.find((s: any) => s.displayName == v.symbol).name
-                } ${moment(v.expiry).format('MMM').toUpperCase()} ${v.strike} SD`;
+                v.alias = `${this.stockList.find((s: any) => s.displayName == v.symbol).name
+                  } ${moment(v.expiry).format('MMM').toUpperCase()} ${v.strike} SD`;
               }
             });
             // basket.orders = basket.orders.filter(
@@ -5541,9 +5517,8 @@ console.log("openOrderList",this.openOrderList)
               v.alias = symbolVal.alias;
             }
             if (v.strategy == 'straddle') {
-              v.alias = `${
-                this.stockList.find((s: any) => s.displayName == v.symbol).name
-              } ${moment(v.expiry).format('MMM').toUpperCase()} ${v.strike} SD`;
+              v.alias = `${this.stockList.find((s: any) => s.displayName == v.symbol).name
+                } ${moment(v.expiry).format('MMM').toUpperCase()} ${v.strike} SD`;
             }
           });
           // basket.orders = basket.orders.filter(
@@ -5586,11 +5561,9 @@ console.log("openOrderList",this.openOrderList)
             lotSize = this.tradeService.allStockList.find(
               (s: any) =>
                 s.symbol ==
-                `${
-                  this.stockList.find((s: any) => s.displayName == val.symbol)
-                    .name
-                }${moment(val.expiry).format('YYMMDD').toUpperCase()}${
-                  val.strike
+                `${this.stockList.find((s: any) => s.displayName == val.symbol)
+                  .name
+                }${moment(val.expiry).format('YYMMDD').toUpperCase()}${val.strike
                 }CE`
             )?.lotSize;
           }
@@ -5604,7 +5577,7 @@ console.log("openOrderList",this.openOrderList)
             expiry: val.expiry,
             strategy: val.strategy,
             lotSize: lotSize,
-            
+
             quantity:
               val.operationType == 'sell' ? -1 * val.quantity : val.quantity,
           };
@@ -5621,11 +5594,9 @@ console.log("openOrderList",this.openOrderList)
           lotSize = this.tradeService.allStockList.find(
             (s: any) =>
               s.symbol ==
-              `${
-                this.stockList.find((s: any) => s.displayName == val.symbol)
-                  .name
-              }${moment(val.expiry).format('YYMMDD').toUpperCase()}${
-                val.strike
+              `${this.stockList.find((s: any) => s.displayName == val.symbol)
+                .name
+              }${moment(val.expiry).format('YYMMDD').toUpperCase()}${val.strike
               }CE`
           )?.lotSize;
         }
@@ -5687,8 +5658,8 @@ console.log("openOrderList",this.openOrderList)
           !f.expiry ||
           (f.expiry &&
             moment(f.expiry).daysInMonth() -
-              Math.round(moment(f.expiry).date()) <
-              7)
+            Math.round(moment(f.expiry).date()) <
+            7)
         ) {
           const sym = this.tradeService.allStockList.find(
             (s: any) => s.symbol == f.symbol
@@ -5741,7 +5712,6 @@ console.log("openOrderList",this.openOrderList)
           userId: this.authService.getUserId(),
         };
       });
-
       this.tradeService.getMargin(values).subscribe((res: any) => {
         // this.loading = false;
         let margin = 0;
@@ -5779,7 +5749,7 @@ console.log("openOrderList",this.openOrderList)
                 //         t.guid == element.guid
                 //     ).id = element.id;
                 // });
-                
+
                 this.loading = false;
                 this._snackBar.open('Basket Executed', 'Dismiss', {
                   duration: 2000,
@@ -5796,8 +5766,8 @@ console.log("openOrderList",this.openOrderList)
             );
           this.getTradeSocket().send(
             `{ "method" : "addtrade", "data":` +
-              JSON.stringify(ordersList) +
-              `}`
+            JSON.stringify(ordersList) +
+            `}`
           );
         }
       });
