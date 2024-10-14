@@ -2543,42 +2543,45 @@ export class TradeComponent implements OnInit {
     });
 
     finalPositions.sort(predicateBy('alias'));
+    let Positions = finalPositions.filter((item: any) => item.quantity != 0)
+    var values: IMarginCalculationRequest[] = Positions.map(
+      (val: any) => {
 
-    finalPositions = finalPositions.filter((item: any) => item.quantity != 0)
-    // var values: IMarginCalculationRequest[] = finalPositions.map(
-    //   (val: any) => {
+        return {
+          price: val.price,
+          quantity:val.quantity,
+          symbol: val.symbol,
+          lotSize: val.lotSize,
+          strategy: val.strategy,
+          strike: val.strike,
+          expiry: val.expiry,
+          transactionType: val.transactionType || val.operationType,
+          triggerPrice: val.trigger,
+          userId: this.authService.getUserId(),
+        };
+      }
 
-    //     return {
-    //       price: val.price,
-    //       quantity:val.quantity,
-    //       symbol: val.symbol,
-    //       lotSize: val.lotSize,
-    //       strategy: val.strategy,
-    //       strike: val.strike,
-    //       expiry: val.expiry,
-    //       transactionType: val.transactionType,
-    //       triggerPrice: val.trigger,
-    //       userId: this.authService.getUserId(),
-    //     };
-    //   }
-
-    // ); 
-    const mappedArray = this.mapObjectsArray(finalPositions);
-    this.tradeService.getMargin(mappedArray).subscribe((res: any) => {
+    ); 
+    // const mappedArray = this.mapObjectsArray(_orderList);
+    this.tradeService.getMargin(values).subscribe((res: any) => {
       let margin = 0;
+     
       margin += Number(res);
-      this.margin = margin
-      let amt = _.sum(
-        finalPositions.map((position: any) => {
-          return position.pandl;
-        })
-
-      )
-      this.walletBalance =
-        this.dayStartWalletBalance + amt - this.margin
+      this.margin=margin
     })
+  
+      let amt=_.sum(
+        Positions.map((position: any) => {
+         return position.pandl;
+       })
+
+)
+{
+this.walletBalance =
+    this.dayStartWalletBalance +amt-this.margin
+}
     return finalPositions
-    // })
+    
   }
   mapObjectsArray(secondArray: any[]): any[] {
     return secondArray.map((secondObj: any) => ({
@@ -5195,7 +5198,6 @@ export class TradeComponent implements OnInit {
     let trades = this.filterPositions(this.positionList)
       .filter((x: any) => x.quantity != 0 && x.checked)
       .map((position: any) => {
-        // console.log(position);
         let obj = new buyAndSellStock();
         obj.alias = position.alias;
         obj.expiry = position.expiry;
