@@ -192,9 +192,11 @@ export class TradeComponent implements OnInit {
 
   constructNewGrid(searchTerm: string): void {
     this.strikeService.getSymbols(searchTerm).subscribe((res: any) => {
-      res = res.filter(
-        (x: any) => moment(x.expiry).toDate() >= moment().toDate()
+      const currentDate = moment().startOf('day');
+       res = res.filter(
+        (x: any) => moment(x.expiry).isSameOrAfter(currentDate)
       );
+      
       res.sort(predicateBy('symbolId'));
       res.sort(predicateBy('expiry'));
       this.tradeList = res.splice(0, 25);

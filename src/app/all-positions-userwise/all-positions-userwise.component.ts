@@ -73,7 +73,7 @@ export class AllPositionsUserwiseComponent {
     });
   }
   getOrderList() {
-    this.tradeService.allTradesByDateAdmin( moment().toDate()).subscribe(
+    this.tradeService.allTradesByDateAdmin(moment().toDate()).subscribe(
       (data: any) => {
         let symbols: any[] = [];
         data = data.filter((d: any) => d.status == 'executed');
@@ -264,24 +264,34 @@ export class AllPositionsUserwiseComponent {
       this.allPositions.sort(predicateBy(orderBy));
     }
   }
+  exitTotal() {
+    this.allPositions
+      .filter((x: any) => x.positionsLength > 0)
+      .forEach((element: any) => {
+        this.exitAll(element);
+      });
+      setTimeout(() => {
+        this.getOrderList();
+      }, 1000);
+      Swal.fire('Success', '', 'success');
+  }
   async exitAll(_positions: any) {
     this.loading = true;
 
-    let positions = _positions.positionList.filter((x: any) => x.quantity != 0);
-
+    let positions = _positions.positionList?.filter((x: any) => x.quantity != 0);
+    if(positions?.length > 0) {
     let totalCount = positions.length;
 
     for (var i = 0; i < totalCount; i++) {
       var totalqty = positions[i].quantity / positions[i].lotSize;
       positions[i].quantity = Math.ceil(totalqty) * positions[i].lotSize;
+      console.log("positions[i].quantity", positions[i].quantity)
       this.exitOrderPlacement(positions[i], _positions.userId);
-      await this.delay(1000);
+      
     }
     this.loading = false;
-    setTimeout(() => {
-      this.getOrderList();
-    }, 1000);
-    Swal.fire('Success', '', 'success');
+  
+  }
   }
   newPositionListData(_orderList: any[]) {
     let masterPositionList: any = [];
@@ -629,18 +639,17 @@ export class AllPositionsUserwiseComponent {
     return _firstPart + _secondPart;
   }
   exitOrderPlacement(position: any, userId: any) {
-    var quotient = position.quantity / (position.lotSize * 20);
-    var remainder = position.quantity % (position.lotSize * 20);
-    remainder = remainder < 0 ? remainder * -1 : remainder;
+    // var quotient = position.quantity / (position.lotSize * 20);
+    // var remainder = position.quantity % (position.lotSize * 20);
+    // remainder = remainder < 0 ? remainder * -1 : remainder;
+    
     var guid = this.generateUID();
-    for (var i = 1; i <= quotient; i++) {
       let obj = new buyAndSellStock();
       obj.alias = position.alias;
       obj.expiry = position.expiry;
       obj.strategy = position.strategy;
-      obj.quantity =
-        position.quantity > 0 ? position.quantity : -1 * position.quantity;
-      obj.guid = `${guid}_${i}`;
+      obj.quantity = position.quantity > 0 ? position.quantity : -1 * position.quantity;
+      obj.guid = `${guid}`;
       obj.isExitOrder = true;
       obj.operationType = position.quantity > 0 ? 'sell' : 'buy';
       obj.orderType = position.orderType;
@@ -654,13 +663,13 @@ export class AllPositionsUserwiseComponent {
       obj.targetPrice = position.ltp;
       obj.strike = position.strike;
       obj.type = 'exit';
-      obj.quantity = position.lotSize * 20;
-
+     
       let inputParam = {
         userId: userId,
         createdBy: this.authService.getUserId(),
         list: [obj],
       };
+      
       this.getSocket().send(
         `{ "method" : "addtrade", "data":` + JSON.stringify([obj]) + `}`
       );
@@ -674,50 +683,7 @@ export class AllPositionsUserwiseComponent {
           // this.loading = false;
         }
       );
-    }
-
-    if (remainder > 0) {
-      let robj = new buyAndSellStock();
-      robj.alias = position.alias;
-      robj.expiry = position.expiry;
-      robj.strategy = position.strategy;
-      robj.quantity =
-        position.quantity > 0 ? position.quantity : -1 * position.quantity;
-      robj.guid = `${guid}_0`;
-      robj.isExitOrder = true;
-      robj.operationType = position.quantity > 0 ? 'sell' : 'buy';
-      robj.orderType = position.orderType;
-      robj.price = position.ltp;
-      robj.rateType = 'market';
-      robj.sell = position.quantity > 0 ? true : false;
-      robj.status = 'open';
-      robj.symbol = position.symbol;
-      robj.symbolId = position.symbolId;
-      robj.userId = userId;
-      robj.targetPrice = position.ltp;
-      robj.strike = position.strike;
-      robj.type = 'exit';
-      robj.quantity = remainder;
-      let inputParam = {
-        userId: userId,
-        createdBy: this.authService.getUserId(),
-        list: [robj],
-      };
-
-      this.getSocket().send(
-        `{ "method" : "addtrade", "data":` + JSON.stringify([robj]) + `}`
-      );
-
-      this.tradeService.buyOrSell(inputParam).subscribe(
-        (data: any) => {
-          // this.loading = false;
-          this.getOrderList();
-        },
-        (err: any) => {
-          // this.loading = false;
-        }
-      );
-    }
+   
   }
   getColor(data: any) {
     var colors = 'bg-white text-gray-500';

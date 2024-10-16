@@ -348,18 +348,62 @@ export class DashboardComponent implements OnInit {
     } else if (selection == 'ledger' || selection == 'funds') {
       this.userService.getLedger(this.userId).subscribe((res: any) => {
         this.ledger = res;
+
+        // Sort the ledger by 'createdOn' in descending order
         this.ledger.sort(predicateByDesc('createdOn'));
-        this.credits = _.sum(
-          this.ledger.filter((x: any) => x.amount > 0).map((x: any) => x.amount)
-        );
-        this.debits = _.sum(
-          this.ledger.filter((x: any) => x.amount < 0).map((x: any) => x.amount)
-        );
+
+        // Convert createdOn to Date object and retain the original date format
+        this.ledger.forEach((element: any) => {
+          element.date = new Date(element.createdOn);
+        });
+
+        // Get trade positions for the user
+        this.tradeService
+          .getPositions(this.userId)
+          .subscribe((positions: any) => {
+            // Convert updatedOn to Date object and retain the original date format
+            positions.forEach((element: any) => {
+              element.date = new Date(element.updatedOn);
+            });
+
+            // Group positions by date
+            let grped = _.groupBy(positions, (pos) => {
+              return moment(pos.date).startOf('day').toDate().toString();
+            });
+
+            // Merge positions into the ledger
+            _.map(grped, (values, key) => {
+              const date = new Date(key);
+              if (
+                !this.ledger.find((x: any) =>
+                  moment(x.date).isSame(date, 'day')
+                )
+              ) {
+                this.ledger.push({
+                  date: date,
+                  amount: _.sum(values.map((x) => x.pandL)),
+                });
+              }
+            });
+            // Sort the ledger by 'date'
+            this.ledger.sort(predicateByDesc('date'));
+
+            // Calculate total credits and debits
+            this.credits = _.sum(
+              this.ledger
+                .filter((x: any) => x.amount > 0)
+                .map((x: any) => x.amount)
+            );
+            this.debits = _.sum(
+              this.ledger
+                .filter((x: any) => x.amount < 0)
+                .map((x: any) => x.amount)
+            );
+          });
       });
     }
   }
   getBalance(index: number) {
-    // console.log(this.ledger.slice(0,index+1).map((x:any)=>x.amount))
     return _.sum(this.ledger.slice(0, index + 1).map((x: any) => x.amount));
   }
   getOrderList(date: any) {
@@ -436,12 +480,14 @@ export class DashboardComponent implements OnInit {
           this.pandlForm.controls['selectedPandLToDate'].value,
           'YYYY-MM-DD'
         ).toDate();
-
+        if (x.strategy == 'straddle') {
+          x.symbol = `${
+            this.stockList.find((s: any) => s.displayName == x.symbol)?.name
+          } ${moment(x.expiry).format('MMM').toUpperCase()} ${x.strike} SD`;
+        }
 
         return updatedOnDate >= fromDate && updatedOnDate <= toDate;
       });
-
-      
     });
   }
   getpnlsum() {
