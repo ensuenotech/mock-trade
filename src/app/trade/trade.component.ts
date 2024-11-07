@@ -107,10 +107,13 @@ export class TradeComponent implements OnInit {
   finniftyExpiries: any = [];
   bankNiftyExpiries: any = [];
   midCPNiftyExpiries: any = [];
+  sensexExpiries:any=[];
+  selectedSENSEXExpiry:any;
   niftyStrikes: any = [];
   finNiftyStrikes: any = [];
   bankNiftyStrikes: any = [];
   midcpNiftyStrikes: any = [];
+  sensexStrikes:any =[];
   NIFTYPRICES!: {
     symbolId: number;
     futSymbolId: number;
@@ -145,6 +148,17 @@ export class TradeComponent implements OnInit {
     if: number;
   };
   MIDCPNIFTYPRICES!: {
+    symbolId: number;
+    futSymbolId: number;
+    ltp: number;
+    previousClose: number;
+    changePercentage: number;
+    futLtp: number;
+    futPreviousClose: number;
+    futChangePercentage: number;
+    if: number;
+  };
+  SENSEXPRICES!: {
     symbolId: number;
     futSymbolId: number;
     ltp: number;
@@ -400,6 +414,10 @@ export class TradeComponent implements OnInit {
       this.midCPNiftyExpiries = res;
       this.selectedMIDCPNIFTYExpiry = res[0];
     });
+    this.strikeService.getExpiryByCalendarId(10).subscribe((res: any) => {
+      this.sensexExpiries = res;
+      this.selectedSENSEXExpiry = res[0];
+    });
     this.refresh();
     this.updateVariableBasedOnWindowSize();
   }
@@ -439,6 +457,8 @@ export class TradeComponent implements OnInit {
       this.selectedBankNiftyExpiry = expiry;
     else if (this.selectedSymbol == 'MIDCPNIFTY')
       this.selectedMIDCPNIFTYExpiry = expiry;
+    else if (this.selectedSymbol == 'SENSEX')
+      this.selectedSENSEXExpiry = expiry;
     else this.selectedExpiry = expiry;
 
     this.loadStocksWatchlist(
@@ -585,6 +605,7 @@ export class TradeComponent implements OnInit {
         this.mocktradeListWatchlist[1] = data[1];
         this.mocktradeListWatchlist[2] = data[2];
         this.mocktradeListWatchlist[3] = data[3];
+        this.mocktradeListWatchlist[4] = data[4];
 
         // this.mocktradeListWatchlist[0].name='NIFTY 50'
         // this.mocktradeListWatchlist[1].name='NIFTY BANK'
@@ -814,7 +835,34 @@ export class TradeComponent implements OnInit {
           this.NIFTYFINSERVICEPRICES.futLtp,
           this.NIFTYFINSERVICEPRICES.ltp
         );
+      } 
+      else if (
+      
+        this.SENSEXPRICES &&
+        this.SENSEXPRICES.futSymbolId == symbolId
+      ) {
+        this.SENSEXPRICES.futLtp = Number(trade[2]);
+        this.SENSEXPRICES.futChangePercentage =
+          (Number(trade[10]) * 100) / this.SENSEXPRICES.futPreviousClose;
+        this.SENSEXPRICES.if = this.calculateImpliedFuture(
+          this.SENSEXPRICES.futLtp,
+          this.SENSEXPRICES.ltp
+        );
       } else if (
+        this.SENSEXPRICES &&
+        this.SENSEXPRICES.symbolId == symbolId
+      ) {
+        this.SENSEXPRICES.ltp = Number(trade[2]);
+        this.SENSEXPRICES.changePercentage =
+          (Number(trade[10]) * 100) / this.SENSEXPRICES.previousClose;
+        this.SENSEXPRICES.if = this.calculateImpliedFuture(
+          this.SENSEXPRICES.futLtp,
+          this.SENSEXPRICES.ltp
+        );
+      }
+      
+      
+      else if (
         this.MIDCPNIFTYPRICES &&
         this.MIDCPNIFTYPRICES.futSymbolId == symbolId
       ) {
@@ -2935,7 +2983,7 @@ this.walletBalance =
     this.mocktradeListStraddle = [];
     this.watchListArray = [];
 
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 5; i++) {
       let watchList = {
         watchLists: [],
       };
@@ -2950,6 +2998,7 @@ this.walletBalance =
         'NIFTY BANK',
         'NIFTY FIN SERVICE',
         'NIFTY MID SELECT',
+        'SENSEX'
       ])
       .subscribe((_touchline: any) => {
         let niftyTouchline = _touchline.find(
@@ -2960,6 +3009,9 @@ this.walletBalance =
         );
         let midCpNiftyTouchline = _touchline.find(
           (x: any) => x.symbol == 'NIFTY MID SELECT'
+        );
+        let sensexTouchline = _touchline.find(
+          (x: any) => x.symbol == 'SENSEX'
         );
         this.strikeService.getExpiry().subscribe((res: any) => {
           this.expiries = res.slice(0, 2);
@@ -3305,7 +3357,174 @@ this.walletBalance =
               }
             });
         });
-
+debugger
+           //#region SENSEX STRADDLE
+           this.strikeService
+           .getExpiryByCalendarId(10)
+           .subscribe((_expiry: any) => {
+             this.sensexExpiries = _expiry.slice(0, 2);
+             debugger
+             let expiry = _expiry[0];
+             let selectedDate = moment(expiry).format('YYMMDD');
+             if (this.selectedSENSEXExpiry) {
+               expiry = this.selectedSENSEXExpiry;
+               selectedDate = moment(this.selectedSENSEXExpiry).format(
+                 'YYMMDD'
+               );
+             }
+             this.strikeService
+               .getStrikes('SENSEX', expiry, 'CE')
+               .subscribe((res: any) => {
+                debugger
+                 let symbols: any = [];
+                 let strikes = res;
+                 this.sensexStrikes = res;
+                 if (sensexTouchline != undefined) {
+                   let strikeIndex =
+                     strikes.findIndex(
+                       (st: any) => st > sensexTouchline.ltp
+                     ) - 1;
+                   let SDSymbols: any = [];
+                   for (var i = -10; i <= 10; i++) {
+                     SDSymbols.push({
+                       symbol: `SENSEX${selectedDate}${
+                         strikes[strikeIndex - i]
+                       }CE`,
+                       strike: strikes[strikeIndex - i],
+                     });
+                   }
+                   for (var i = -10; i <= 10; i++) {
+                     SDSymbols.push({
+                       symbol: `SENSEX${selectedDate}${
+                         strikes[strikeIndex - i]
+                       }CE`,
+                       strike: strikes[strikeIndex - i],
+                     });
+                   }
+                   this.mocktradeListStraddle[4] = {
+                     name: 'SENSEX',
+                     watchLists: SDSymbols.map((x: any, i: any) => {
+                       return {
+                         symbol: x.symbol,
+                         alias: x.symbol + ' SD',
+                         tradingSymbol: x.symbol,
+                         expiry: expiry,
+                         lotSize: this.tradeService.allStockList.find(
+                           (s) => s.symbol == x.symbol
+                         )?.lotSize,
+                         strike: x.strike,
+                         display: x.display ?? true,
+                         displayOrder: i,
+                       };
+                     }),
+                   };
+                   var groupedBNFElements = _.groupBy(
+                     this.mocktradeListStraddle[4].watchLists,
+                     'strike'
+                   );
+                   var elements: any = [];
+                   _.map(groupedBNFElements, (val, key) => {
+                     let ceSymbol = `SENSEX${selectedDate}${key}CE`;
+                     let peSymbol = `SENSEX${selectedDate}${key}PE`;
+                     symbols.push(ceSymbol);
+                     symbols.push(peSymbol);
+                     let _element = {
+                       alias: `SENSEX ${moment(expiry)
+                         .format('MMM')
+                         .toUpperCase()} ${key} SD`,
+                       lotSize: val[0].lotSize,
+                       expiry: val[0].expiry,
+                       ceSymbol: ceSymbol,
+                       peSymbol: peSymbol,
+                       strike: key,
+                       display: true,
+                       marketDepth: [
+                         {
+                           askPrice: 0,
+                           bidPrice: 0,
+                           askQty: 0,
+                           bidQty: 0,
+                         },
+                       ],
+                     };
+                     elements.push(_element);
+                   });
+                   this.mocktradeListStraddle[4].watchLists = elements;
+                   this.subscribeSymbols(symbols);
+                   this.strikeService
+                     .getTouchLine(symbols)
+                     .subscribe((_touchline: any) => {
+                       this.mocktradeListStraddle[4].watchLists.forEach(
+                         (element: any) => {
+                           let ceTouchline = _touchline.find(
+                             (t: any) => t.symbol == element.ceSymbol
+                           );
+                           let peTouchline = _touchline.find(
+                             (t: any) => t.symbol == element.peSymbol
+                           );
+                           element.ceSymbolId = ceTouchline?.symbolId;
+                           element.peSymbolId = peTouchline?.symbolId;
+                           element.peLtp = peTouchline.ltp;
+                           element.ceLtp = ceTouchline.ltp;
+                           element.ltp = ceTouchline.ltp + peTouchline.ltp;
+                           // this.updateLIVELTP(element.alias, element.ltp);
+                           element.cePreviousClose = ceTouchline.previousClose;
+                           element.pePreviousClose = peTouchline.previousClose;
+                           element.open = peTouchline.open + ceTouchline.open;
+                           element.previousClose =
+                             peTouchline.previousClose +
+                             ceTouchline.previousClose;
+                           element.changePercentage =
+                             ((ceTouchline.ltp -
+                               ceTouchline.previousClose +
+                               (peTouchline.ltp - peTouchline.previousClose)) *
+                               100) /
+                             (ceTouchline.previousClose +
+                               peTouchline.previousClose);
+                         }
+                       );
+                       let newSymbols = SDSymbols.map((x: any) => {
+                         return x.symbol;
+                       }).filter(
+                         (x: any) =>
+                           !this.tradeService.allStockList.some(
+                             (s) => s.symbol == x
+                           )
+                       );
+                       if (newSymbols.length > 0) {
+                         this.strikeService
+                           .getSymbolsDetails(newSymbols)
+                           .subscribe((res: any) => {
+                             res.forEach((element: any) => {
+                               if (
+                                 this.tradeService.allStockList.find(
+                                   (s) => s.symbol == element.symbol
+                                 ) == undefined
+                               )
+                                 this.tradeService.allStockList.push(element);
+                             });
+                             localStorage.setItem(
+                               'allStockList',
+                               this.encService.encrypt(
+                                 JSON.stringify(this.tradeService.allStockList)
+                               )
+                             );
+                             this.mocktradeListStraddle[1].watchLists.forEach(
+                               (element: any) => {
+                                 element.expiry = res.find(
+                                   (t: any) => t.symbol == element.ceSymbol
+                                 )?.expiry;
+                                 element.lotSize = res.find(
+                                   (t: any) => t.symbol == element.ceSymbol
+                                 )?.lotSize;
+                               }
+                             );
+                           });
+                       }
+                     });
+                 }
+               });
+           });
         //#region MID CP NIDTY STRADDLE
         this.strikeService
           .getExpiryByCalendarId(4)
@@ -4316,7 +4535,7 @@ this.walletBalance =
     this.mocktradeListOptions = [];
     this.watchListArray = [];
 
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 5; i++) {
       let watchList = {
         watchLists: [],
       };
@@ -4331,6 +4550,7 @@ this.walletBalance =
         'NIFTY BANK',
         'NIFTY FIN SERVICE',
         'NIFTY MID SELECT',
+        'SENSEX'
       ])
       .subscribe((_touchline: any) => {
         this.strikeService.getExpiryByCalendarId(3).subscribe((res: any) => {
@@ -4882,6 +5102,177 @@ this.walletBalance =
                 });
             });
         });
+        this.strikeService.getExpiryByCalendarId(10).subscribe((res: any) => {
+      
+          this.sensexExpiries = res.slice(0, 2);
+          let expiry = res[0];
+          if (
+            this.selectedSENSEXExpiry &&
+            this.sensexExpiries.find(
+              (x: any) => x == this.selectedSENSEXExpiry
+            )
+          ) {
+            expiry = this.selectedSENSEXExpiry;
+          }
+          let sensexTouchline = _touchline.find(
+            (x: any) => x.symbol == 'SENSEX'
+          );
+          this.strikeService
+            .getStrikes('SENSEX', expiry, 'CE')
+            .subscribe((res: any) => {
+              let strikes = res;
+              let selectedDate = moment(expiry).format('YYMMDD');
+              let strikeIndex =
+                strikes.findIndex((st: any) => st > sensexTouchline.ltp) -
+                1;
+              let yy = moment(expiry).format('YY');
+              let month = moment(expiry).format('MMM').toUpperCase();
+              let symbols = [
+                { symbol: 'SENSEX', strike: 0 },
+                {
+                  symbol: `SENSEX${yy}${month}FUT`,
+                  strike: 0,
+                  display: false,
+                },
+              ];
+              for (
+                var i = this.authService.isAdminUser() ? 15 : 10;
+                i >= (this.authService.isAdminUser() ? -15 : -10);
+                i--
+              ) {
+                symbols.push({
+                  symbol: `SENSEX${selectedDate}${
+                    strikes[strikeIndex - i]
+                  }CE`,
+                  strike: strikes[strikeIndex - i],
+                });
+              }
+              for (
+                var i = this.authService.isAdminUser() ? 15 : 10;
+                i >= (this.authService.isAdminUser() ? -15 : -10);
+                i--
+              ) {
+                symbols.push({
+                  symbol: `SENSEX${selectedDate}${
+                    strikes[strikeIndex - i]
+                  }PE`,
+                  strike: strikes[strikeIndex - i],
+                });
+              }
+              this.subscribeSymbols(symbols.map((x) => x.symbol));
+              let newSymbols = symbols.filter(
+                (s) =>
+                  !this.tradeService.allStockList.some(
+                    (st) => st.symbol == s.symbol
+                  )
+              );
+              if (newSymbols.length > 0) {
+                this.strikeService
+                  .getSymbolsDetails(symbols.map((x) => x.symbol))
+                  .subscribe((res: any) => {
+                    res.forEach((element: any) => {
+                      if (
+                        this.tradeService.allStockList.find(
+                          (s) => s.symbol == element.symbol
+                        ) == undefined
+                      )
+                        this.tradeService.allStockList.push(element);
+                    });
+                    localStorage.setItem(
+                      'allStockList',
+                      this.encService.encrypt(
+                        JSON.stringify(this.tradeService.allStockList)
+                      )
+                    );
+                    this.mocktradeListOptions[4].watchLists.forEach(
+                      (element: any) => {
+                        element.alias = res.find(
+                          (t: any) => t.symbol == element.symbol
+                        ).alias;
+                        element.expiry = res.find(
+                          (t: any) => t.symbol == element.symbol
+                        ).expiry;
+                        element.lotSize = res.find(
+                          (t: any) => t.symbol == element.symbol
+                        ).lotSize;
+                      }
+                    );
+                  });
+              }
+              var sensexWatchlist = {
+                name: 'SENSEX',
+                watchLists: symbols.map((x, i) => {
+                  return {
+                    symbol: x.symbol,
+                    alias: this.tradeService.allStockList.find(
+                      (s) => s.symbol == x.symbol
+                    )?.alias,
+                    tradingSymbol: x.symbol,
+                    expiry: this.tradeService.allStockList.find(
+                      (s) => s.symbol == x.symbol
+                    )?.expiry,
+                    lotSize: this.tradeService.allStockList.find(
+                      (s) => s.symbol == x.symbol
+                    )?.lotSize,
+                    strike: x.strike,
+                    display: x.display ?? true,
+                    displayOrder: i,
+                  };
+                }),
+              };
+              this.mocktradeListOptions[4] = sensexWatchlist;
+              this.strikeService
+                .getTouchLine(symbols.map((x) => x.symbol))
+                .subscribe((_touchline: any) => {
+                  this.mocktradeListOptions[4].watchLists.forEach(
+                    (element: any) => {
+                      this.SENSEXPRICES = {
+                        ltp: sensexTouchline.ltp,
+                        previousClose: sensexTouchline.previousClose,
+                        changePercentage: sensexTouchline.changePercentage,
+                        futLtp: _touchline.find(
+                          (t: ITouchlineDetails) =>
+                            t.symbol == `SENSEX${yy}${month}FUT`
+                        )?.ltp,
+                        futPreviousClose: _touchline.find(
+                          (t: ITouchlineDetails) =>
+                            t.symbol == `SENSEX${yy}${month}FUT`
+                        )?.previousClose,
+                        futChangePercentage: _touchline.find(
+                          (t: ITouchlineDetails) =>
+                            t.symbol == `SENSEX${yy}${month}FUT`
+                        )?.changePercentage,
+                        if: this.calculateImpliedFuture(
+                          _touchline.find(
+                            (t: ITouchlineDetails) =>
+                              t.symbol == `SENSEX${yy}${month}FUT`
+                          )?.ltp,
+                          sensexTouchline.ltp
+                        ),
+                        symbolId: sensexTouchline.symbolId,
+                        futSymbolId: _touchline.find(
+                          (t: ITouchlineDetails) =>
+                            t.symbol == `SENSEX${yy}${month}FUT`
+                        )?.symbolId,
+                      };
+                      let touchline = _touchline.find(
+                        (t: any) => t.symbol == element.symbol
+                      );
+                      if (touchline) {
+                        element.ltp = touchline.ltp;
+                        // this.updateLIVELTP(element.alias, element.ltp)
+                        element.open = touchline.open;
+                        element.high = touchline.high;
+                        element.low = touchline.low;
+                        element.previousClose = touchline.previousClose;
+                        element.changePercentage = touchline.changePercentage;
+                        element.symbolId = touchline.symbolId;
+                      }
+                    }
+                  );
+                });
+            });
+        });
         this.strikeService.getExpiry().subscribe((res: any) => {
           this.expiries = res.slice(0, 2);
           let _expiry = res[0];
@@ -5184,6 +5575,7 @@ this.walletBalance =
                 });
             });
         });
+
       });
   }
   generateUID() {
