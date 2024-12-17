@@ -2932,7 +2932,6 @@ this.walletBalance =
     }
   }
   handlePositionsSort(orderBy: any, event: any) {
-    debugger
     event.target.children[0].classList.toggle('fa-caret-down');
     event.target.children[0].classList.toggle('fa-caret-up');
     const order = event.target.attributes['data-sort'].value;
