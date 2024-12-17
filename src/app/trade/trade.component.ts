@@ -282,7 +282,7 @@ export class TradeComponent implements OnInit {
         this.orderList = this.totalOrderList.filter(
           (t: any) => t.status == 'executed'
         );
-        this.positionList = this.newPositionListData(this.orderList);
+        this.positionList =  this.newPositionListData(this.orderList);
 
         // this.orderListDisplay.find((t: any) => trade.guid == t.guid).price =
         //   trade.price;
@@ -2264,11 +2264,18 @@ export class TradeComponent implements OnInit {
     );
   }
 
-  tabChanged(event: MatTabChangeEvent) {
+   tabChanged(event: MatTabChangeEvent) {
     let segment = event.tab.textLabel.toUpperCase();
     // if (segment == 'ORDERS') this.getOrderList();
     if (segment == 'POSITIONS')
-      this.positionList = this.newPositionListData(this.orderList);
+    {
+      this.positionList =  this.newPositionListData(this.orderList);
+      // this.positionList = this.newPositionListData(this.orderList);
+      this.positionList.forEach((element: any) => {
+        element.checked = true;
+      })
+    }
+     
     else if (segment == 'BASKETS') {
       this.reloadBaskets();
     }
@@ -2372,7 +2379,7 @@ export class TradeComponent implements OnInit {
   //     this.positionList = this.newPositionListData(this.orderList);
   //   }
   // }
-  newPositionListData(_orderList: any[]) {
+   newPositionListData(_orderList: any[]) {
     let orders: any = [];
     let masterPositionList: any = [];
     let grped = _.groupBy(_orderList, 'orderType');
@@ -2925,6 +2932,7 @@ this.walletBalance =
     }
   }
   handlePositionsSort(orderBy: any, event: any) {
+    debugger
     event.target.children[0].classList.toggle('fa-caret-down');
     event.target.children[0].classList.toggle('fa-caret-up');
     const order = event.target.attributes['data-sort'].value;
@@ -5808,6 +5816,10 @@ debugger
         element.checked = false;
       });
   }
+  isAllSelected(): boolean {
+    return this.positionList.every((element: any) => element.checked);
+  }
+  
   editOrder(item: any) {
     item.editMode = true;
   }
